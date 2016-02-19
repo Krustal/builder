@@ -1,0 +1,11 @@
+{
+  "esnext": true,
+  "exversion": 6,
+  "module": true,
+  "globals": {
+    "describe": false,
+    "require": false,
+    "module": false,
+    "__dirname": false
+  }
+}
