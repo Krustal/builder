@@ -21,10 +21,11 @@
     .overview {
       font-size: 2em;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       flex-direction: row;
       flex-wrap: wrap;
       align-content: flex-end;
+      min-height: 200px;
     }
 
     label {
@@ -44,6 +45,88 @@
     label input:focus {
       outline: none;
     }
+
+    .abilities {
+      clear: both;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    thead {
+      text-transform: uppercase;
+      font-weight: lighter;
+      font-family: 'Titillium Web';
+    }
+
+    tbody {
+    }
+
+    tbody td {
+      border: solid black 1px;
+      background: white;
+      min-width: 3.5em;
+    }
+
+    tr.editable td, tr.output td {
+      border-width: 2px;
+    }
+
+    tr.editable td input{
+      min-height: 50px;
+    }
+
+    tr.computed td {
+      border: solid #ccc 1px;
+    }
+
+    tr.computed.output td {
+      border: solid black 1px;
+      border-width: 2px;
+    }
+
+    td input.ability {
+      width: 4em;
+      height: 100%;
+      border: none;
+    }
+
+    td input.ability:focus {
+      outline: none;
+    }
+
+    tbody th {
+    }
+
+    td.tab {
+      background: black;
+      color: white;
+      border-bottom-right-radius: 7px;
+      border-bottom-left-radius: 7px;
+      font-size: 0.6em;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 3px;
+    }
+
+    tbody tr.computed th:not(:empty) div {
+      background: #ccc;
+      color: white;
+      font-weight: 100;
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+      /* Currently causing z-index issues */
+      /*transform: rotateZ(20deg) translateX(4px);
+      transform-origin: bottom right;
+      transform-style: flat;
+      padding-right: 20px; */
+      padding: 10px;
+    }
+
+    tbody tr.computed.output th:not(:empty) div{
+      background: black;
+    }
   </style>
 </head>
 <body>
@@ -55,7 +138,57 @@
       <label for="">class<input type="text"></label>
       <label for="">level<input type="text"></label>
     </div>
-    <div class="abilities"></div>
+    <div class="abilities">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>str</th>
+            <th>con</th>
+            <th>dex</th>
+            <th>int</th>
+            <th>wis</th>
+            <th>cha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="editable">
+            <th></th>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+            <td><input class="ability" type="number" min="0" max="40"></td>
+          </tr>
+          <tr class="computed">
+            <th><div>modifier</div></th>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+          </tr>
+          <tr class="computed output">
+            <th><div>modifier + level</div></th>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+            <td><input class="ability" type="number"></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3"></td>
+            <td class="tab">initiative</td>
+            <td colspan="3"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
     <div class="combat-stats"></div>
     <div class="one-unique-thing"></div>
   </form>
