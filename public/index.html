@@ -31,8 +31,11 @@
     label {
       font-family: 'Titillium Web';
       text-transform: capitalize;
-      border-bottom: solid black 1px;
       margin: 10px;
+    }
+
+    label.basic {
+      border-bottom: solid black 1px;
     }
 
     input {
@@ -45,7 +48,7 @@
       outline: none;
     }
 
-    label input {
+    label.basic input {
       border: none;
       margin-left: 10px;
       font-size: 0.7em;
@@ -177,7 +180,6 @@
       text-align: center;
       display: inline-block;
       margin-right: 10px;
-      max-width: 120px;
     }
 
     h3 {
@@ -193,16 +195,65 @@
     h3.major {
       font-size: 1.5em;
     }
+
+    .ratio-input {
+      border: solid black 2px;
+      text-align: left;
+    }
+
+    .ratio-input label {
+      margin: 4px;
+      font-size: .5em;
+    }
+
+    .ratio-input .numerator label {
+      vertical-align: top;
+    }
+
+    .ratio-input>div {
+      display: inline-block;
+    }
+
+    .ratio-input input {
+      width: 50px;
+      font-size: 1.5em;
+    }
+
+    .ratio-input .numerator {
+      text-align: left;
+      vertical-align: top;
+      position: relative;
+    }
+
+    .ratio-input .numerator::after {
+      content: "";
+      width: 10px;
+      height: 115%;
+      border-right: solid #ccc 2px;
+      position: absolute;
+      right: 0;
+      top: -6px;
+      transform: rotateZ(30deg);
+    }
+
+    .ratio-input .denominator {
+      text-align: right;
+      vertical-align: bottom;
+    }
+
+    span.operator {
+      vertical-align: super;
+    }
   </style>
 </head>
 <body>
   <form action="">
     <div class="logo"></div>
     <div class="overview">
-      <label for="">name<input type="text"></label>
-      <label for="">race<input type="text"></label>
-      <label for="">class<input type="text"></label>
-      <label for="">level<input type="text"></label>
+      <label class="basic" for="">name<input type="text"></label>
+      <label class="basic" for="">race<input type="text"></label>
+      <label class="basic" for="">class<input type="text"></label>
+      <label class="basic" for="">level<input type="text"></label>
     </div>
     <div class="abilities">
       <table>
@@ -284,12 +335,33 @@
       <div class="hit-points combat-stat">
         <h3 class="major">Hit Points</h3>
         <div class="ratio-input">
-          <label for="">current<input type="text"></label>
-          <label for="">maximum<input type="text"></label>
+          <div class="numerator">
+            <label for="">current</label><br>
+            <input type="text">
+          </div>
+          <div class="denominator">
+            <input type="text"><br>
+            <label for="">maximum</label>
+          </div>
         </div>
       </div>
-      <div class="recoveries"></div>
-      <div class="recovery-roll"></div>
+      <div class="recoveries combat-stat">
+        <h3 class="major">Recoveries</h3>
+        <div class="ratio-input">
+          <div class="numerator">
+            <label for="">current</label><br>
+            <input type="text">
+          </div>
+          <div class="denominator">
+            <input type="text"><br>
+            <label for="">maximum</label>
+          </div>
+        </div>
+      </div>
+      <div class="recovery-roll combat-stat">
+        <h3>Recovery Roll</h3>
+        <input type="text" size="4em"><span class="operator">+</span><input type="text" size="2em">
+      </div>
     </div>
     <div class="one-unique-thing"></div>
   </form>
