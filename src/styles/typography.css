@@ -1,0 +1,21 @@
+@value base as baseSpacing from './spacing.css';
+
+.normal {
+  line-height: baseSpacing;
+  font-size: calc(baseSpacing * 0.8);
+}
+
+.double {
+  line-height: calc(baseSpacing * 2);
+  font-size: calc(baseSpacing * 2 * 0.8);
+}
+
+.triple {
+  line-height: calc(baseSpacing * 3);
+  font-size: calc(baseSpacing * 3 * 0.8);
+}
+
+.quad {
+  line-height: calc(baseSpacing * 4);
+  font-size: calc(baseSpacing * 4 * 0.8);
+}

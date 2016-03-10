@@ -1,0 +1,16 @@
+@value mobile from "./breakpoints.css";
+
+.main {
+  dislay: none;
+}
+@media mobile {
+  .main {
+    display: block;
+    height: 200px;
+    width: 200px;
+    background: url('/images/thirteenth-age-logo.png');
+    background-size: 100%;
+    float: left;
+    margin-right: 10px;
+  }
+}

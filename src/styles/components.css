@@ -1,0 +1,4 @@
+.characterOverview {
+  composes: quad from "./typography.css";
+  composes: flex alignItemEnd row wrap alignContentEnd from "./flex.css";
+}
