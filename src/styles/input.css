@@ -1,3 +1,25 @@
-.simple-text {
-  
+.base {
+  border: none;
+}
+
+.simpleText {
+  composes: triple from "./typography.css";
+  composes: base;
+  text-align: center;
+  margin-left: 10px;
+  font-weight: lighter;
+}
+
+.simpleText:focus {
+  outline: none;
+}
+
+label.basic input {
+  margin-left: 10px;
+  font-size: 0.7em;
+  font-weight: lighter;
+}
+
+label input:focus {
+  outline: none;
 }
