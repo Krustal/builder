@@ -1,16 +1,16 @@
 import React from 'react';
 
 import components from '../../styles/components.css';
-import inputStyle from '../../styles/input.css';
+import TextInput from '../form/text_input.jsx';
 
 export default class CharacterOverview extends React.Component {
   render() {
     return (
       <div className={components.characterOverview}>
-        <label className="basic">name<input className={inputStyle.simpleText} type="text" /></label>
-        <label className="basic">race<input className={inputStyle.simpleText} /></label>
-        <label className="basic">class<input className={inputStyle.simpleText} /></label>
-        <label className="basic">level<input className={inputStyle.simpleText} /></label>
+        <TextInput>name</TextInput>
+        <TextInput>race</TextInput>
+        <TextInput>class</TextInput>
+        <TextInput>level</TextInput>
       </div>
     );
   }
