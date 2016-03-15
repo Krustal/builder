@@ -1,36 +1,13 @@
 import React from 'react';
+import DefenseStat from './defense_stat.jsx';
 
 export default class CombatStats extends React.Component {
   render() {
     return (
       <div className="combat-stats">
-        <div className="armor-class combat-stat">
-          <h3>
-          Armor Class
-          </h3>
-          <div className="input-box input-box-left">
-            <label>A<br />C</label>
-            <input type="text" maxLength={3} size="4em" />
-          </div>
-        </div>
-        <div className="physical-defense combat-stat">
-          <h3>
-          Physical Defense
-          </h3>
-          <div className="input-box input-box-left">
-            <label>P<br />D</label>
-            <input type="text" maxLength={3} size="4em" />
-          </div>
-        </div>
-        <div className="mental-defense combat-stat">
-          <h3>
-          Mental Defense
-          </h3>
-          <div className="input-box input-box-left">
-            <label>M<br />D</label>
-            <input type="text" maxLength={3} size="4em" />
-          </div>
-        </div>
+        <DefenseStat label="AC">Armor Class</DefenseStat>
+        <DefenseStat label="PD">Physical Defense</DefenseStat>
+        <DefenseStat label="MD">Mental Defense</DefenseStat>
         <div className="save-bonuses combat-stat">
           <h3 className="minor">
           Save Bonuses
