@@ -3,7 +3,7 @@
 }
 
 .simpleText {
-  composes: triple from "./typography.css";
+  composes: triple from "./theme/typography.scss";
   composes: base;
   text-align: center;
   margin-left: 10px;

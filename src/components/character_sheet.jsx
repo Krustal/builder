@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../styles/logo.css';
-import typography from '../styles/typography.css';
+import typography from '../styles/theme/typography.scss';
 
 import CharacterOverview from './character/overview.jsx';
 import CharacterAbilities from './character/abilities.jsx';

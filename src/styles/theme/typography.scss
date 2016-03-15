@@ -1,4 +1,5 @@
-@value base as baseSpacing from './spacing.css';
+@value primaryFont 'Titillium Web';
+@value base as baseSpacing from '../spacing.css';
 
 .normal {
   line-height: baseSpacing;
