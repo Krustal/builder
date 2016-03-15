@@ -1,3 +1,7 @@
+@value base as baseSpacing from './spacing.css';
+@value primary as primaryColor from './theme/colors.scss';
+@value secondary as secondaryColor from './theme/colors.scss';
+
 .base {
   border: none;
 }
@@ -25,25 +29,23 @@ label input:focus {
 }
 
 .defenseStat {
-  border: solid black 2px;
+  border: solid primaryColor 2px;
   border-top-left-radius: 20px;
-  background: black;
-  color: white;
-  padding-left: 5px;
-  padding-top: 3px;
-  height: 40px;
-  display: inline-block;
+  background: primaryColor;
+  color: secondaryColor;
+  padding: 3px 2px 3px 5px;
+  height: calc(baseSpacing * 4);
 }
 
 .defenseStatLabel {
   margin: 0 5px 0 0;
-  line-height: 1.1em;
   display: inline-block;
   vertical-align: bottom;
+  composes: double from "./theme/typography.scss";
 }
 
 .defenseStatInput {
-  height: 80%;
+  height: 85%;
   vertical-align: top;
   composes: double from "./theme/typography.scss";
   text-align: center;
