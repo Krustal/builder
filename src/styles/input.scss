@@ -1,0 +1,50 @@
+.base {
+  border: none;
+}
+
+.simpleText {
+  composes: triple from "./theme/typography.scss";
+  composes: base;
+  text-align: center;
+  margin-left: 10px;
+  font-weight: lighter;
+}
+
+.simpleText:focus {
+  outline: none;
+}
+
+label.basic input {
+  margin-left: 10px;
+  font-size: 0.7em;
+  font-weight: lighter;
+}
+
+label input:focus {
+  outline: none;
+}
+
+.defenseStat {
+  border: solid black 2px;
+  border-top-left-radius: 20px;
+  background: black;
+  color: white;
+  padding-left: 5px;
+  padding-top: 3px;
+  height: 40px;
+  display: inline-block;
+}
+
+.defenseStatLabel {
+  margin: 0 5px 0 0;
+  line-height: 1.1em;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.defenseStatInput {
+  height: 80%;
+  vertical-align: top;
+  composes: double from "./theme/typography.scss";
+  text-align: center;
+}

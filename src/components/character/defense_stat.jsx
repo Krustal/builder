@@ -1,4 +1,7 @@
 import React from 'react';
+import InputStyle from '../../styles/input.scss';
+import CombatStatStyle from '../../styles/components/combat_stat.scss';
+import HeaderStyle from '../../styles/headers.scss';
 
 export default class DefenseStat extends React.Component {
   render() {
@@ -8,11 +11,11 @@ export default class DefenseStat extends React.Component {
       return memo;
     }, []).slice(0, -1);
     return (
-      <div className="armor-class combat-stat">
-        <h3>{this.props.children}</h3>
-        <div className="input-box input-box-left">
-          <label>{label}</label>
-          <input type="text" maxLength={3} size="4em" />
+      <div className={CombatStatStyle.basic}>
+        <h3 className={HeaderStyle.h3}>{this.props.children}</h3>
+        <div className={InputStyle.defenseStat}>
+          <label className={InputStyle.defenseStatLabel}>{label}</label>
+          <input className={InputStyle.defenseStatInput} type="text" maxLength={3} size="4em" />
         </div>
       </div>
     );
