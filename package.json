@@ -1,7 +1,8 @@
 {
   "scripts": {
     "webpack": "webpack",
-    "start": "webpack-dev-server --inline --hot -w"
+    "start": "webpack-dev-server --inline --hot -w",
+    "build": "webpack --config webpack.prod.config.js"
   },
   "dependencies": {
     "react": "^0.14.7",
