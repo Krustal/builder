@@ -1,0 +1,92 @@
+.characterAbilities {
+  table {
+    border-collapse: collapse;
+  }
+
+  thead {
+    text-transform: uppercase;
+    font-weight: lighter;
+    font-family: 'Titillium Web';
+  }
+
+  tbody {
+    td {
+      border: solid black 1px;
+      background: white;
+      min-width: 3.5em;
+    }
+
+    tr:global(.computed) {
+      th:not(:empty) div {
+        background: #ccc;
+        color: white;
+        font-weight: 100;
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+        // TODO: Find a way to rotate without obscuring input
+        /* Currently causing z-index issues */
+        /*transform: rotateZ(20deg) translateX(4px);
+        transform-origin: bottom right;
+        transform-style: flat;
+        padding-right: 20px;*/
+        padding: 10px;
+      }
+      &:global(.output) th:not(:empty) div{
+        background: black;
+      }
+    }
+  }
+
+  :global(tr.editable) {
+    td {
+      border-width: 2px;
+
+      input {
+        min-height: 50px;
+      }
+    }
+  }
+
+  :global(tr.output) {
+    td {
+      border-width: 2px;
+    }
+  }
+
+  :global(tr.computed) {
+    td {
+      border: solid #ccc 1px;
+    }
+    &:global(.output) {
+      td {
+        border: solid black 1px;
+        border-width: 2px;
+      }
+    }
+  }
+
+  // Cells
+  td {
+    input:global(.ability) {
+      width: 2em;
+      height: 100%;
+      border: none;
+      font-size: 1.5em;
+      text-align: center;
+
+      &:focus {
+        outline: none;
+      }
+    }
+    &:global(.tab) {
+      background: black;
+      color: white;
+      border-bottom-right-radius: 7px;
+      border-bottom-left-radius: 7px;
+      font-size: 0.6em;
+      text-align: center;
+      text-transform: uppercase;
+      padding: 3px;
+    }
+  }
+}

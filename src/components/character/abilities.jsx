@@ -1,9 +1,10 @@
 import React from 'react';
+import CharacterAbilityStyles from '../../styles/components/character_abilities.scss';
 
 export default class CharacterAbilities extends React.Component {
   render() {
     return (
-      <div className="abilities">
+      <div className={CharacterAbilityStyles.characterAbilities}>
         <table>
           <thead>
             <tr>
@@ -41,73 +42,73 @@ export default class CharacterAbilities extends React.Component {
                 max={40} />
               </td>
               <td>
-              <input
-              className="ability"
-              type="text"
-              min={0}
-              max={40} />
+                <input
+                className="ability"
+                type="text"
+                min={0}
+                max={40} />
               </td>
               <td>
-              <input
-              className="ability"
-              type="text"
-              min={0}
-              max={40} />
+                <input
+                className="ability"
+                type="text"
+                min={0}
+                max={40} />
               </td>
               <td>
-              <input
-              className="ability"
-              type="text"
-              min={0}
-              max={40} />
+                <input
+                className="ability"
+                type="text"
+                min={0}
+                max={40} />
               </td>
             </tr>
             <tr className="computed">
               <th>
-              <div>modifier</div>
+                <div>modifier</div>
               </th>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
             </tr>
             <tr className="computed output">
               <th>
-              <div>
-              modifier + level
-              </div>
+                <div>
+                modifier + level
+                </div>
               </th>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
               <td>
-              <input className="ability" type="text" />
+                <input className="ability" type="text" />
               </td>
             </tr>
           </tbody>
