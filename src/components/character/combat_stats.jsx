@@ -2,6 +2,7 @@ import React from 'react';
 import DefenseStat from './defense_stat.jsx';
 import StatField from './stat_field.jsx';
 import TextInput from '../form/text_input.jsx';
+import RatioInput from '../form/ratio_input.jsx';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
@@ -22,33 +23,11 @@ export default class CombatStats extends React.Component {
           <h3 className={HeaderStyle.h3Major}>
             Hit Points
           </h3>
-          <div className="ratio-input">
-            <div className="numerator">
-              <label htmlFor>current</label>
-              <br />
-              <input type="text" />
-            </div>
-            <div className="denominator">
-              <input type="text" />
-              <br />
-              <label htmlFor>maximum</label>
-            </div>
-          </div>
+          <RatioInput numerator="current" denominator="maximum" />
         </StatField>
         <StatField>
           <h3 className={HeaderStyle.h3Major}>Recoveries</h3>
-          <div className="ratio-input">
-            <div className="numerator">
-              <label htmlFor>current</label>
-              <br />
-              <input type="text" />
-            </div>
-            <div className="denominator">
-              <input type="text" />
-              <br />
-              <label htmlFor>maximum</label>
-            </div>
-          </div>
+          <RatioInput numerator="current" denominator="maximum" />
         </StatField>
         <StatField>
           <h3 className={HeaderStyle.h3}>
