@@ -18,7 +18,7 @@ export default class CombatStats extends React.Component {
           <h3 className={HeaderStyle.h3Minor}>
           Save Bonuses
           </h3>
-          <TextInput />
+          <TextInput length={5} />
         </StatField>
         <StatField>
           <h3 className={HeaderStyle.h3Major}>

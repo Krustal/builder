@@ -1,13 +1,14 @@
 import React from 'react';
+import TextInput from './text_input.jsx';
 import InputStyle from '../../styles/input.scss';
 
 export default class DiceInput extends React.Component {
   render() {
     return (
       <div>
-        <input className={InputStyle.simpleText} type="text" size="4em" />
+        <TextInput length={5} />
         <span className={InputStyle.diceInputOperator}>+</span>
-        <input className={InputStyle.simpleText} type="text" size="2em" />
+        <TextInput length={3} />
       </div>
     );
   }
