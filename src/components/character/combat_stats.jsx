@@ -3,6 +3,7 @@ import DefenseStat from './defense_stat.jsx';
 import StatField from './stat_field.jsx';
 import TextInput from '../form/text_input.jsx';
 import RatioInput from '../form/ratio_input.jsx';
+import DiceInput from '../form/dice_input.jsx';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
@@ -30,12 +31,8 @@ export default class CombatStats extends React.Component {
           <RatioInput numerator="current" denominator="maximum" />
         </StatField>
         <StatField>
-          <h3 className={HeaderStyle.h3}>
-            Recovery Roll
-          </h3>
-          <input type="text" size="4em" />
-          <span className="operator">+</span>
-          <input type="text" size="2em" />
+          <h3 className={HeaderStyle.h3}>Recovery Roll</h3>
+          <DiceInput />
         </StatField>
       </div>
     );
