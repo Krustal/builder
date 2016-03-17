@@ -1,6 +1,7 @@
 import React from 'react';
 import DefenseStat from './defense_stat.jsx';
 import StatField from './stat_field.jsx';
+import TextInput from '../form/text_input.jsx';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
@@ -15,7 +16,7 @@ export default class CombatStats extends React.Component {
           <h3 className={HeaderStyle.h3Minor}>
           Save Bonuses
           </h3>
-          <input type="text" size="2em" />
+          <TextInput />
         </StatField>
         <StatField>
           <h3 className={HeaderStyle.h3Major}>

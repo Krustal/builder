@@ -7,10 +7,10 @@ export default class CharacterOverview extends React.Component {
   render() {
     return (
       <div className={components.characterOverview}>
-        <TextInput>name</TextInput>
-        <TextInput>race</TextInput>
-        <TextInput>class</TextInput>
-        <TextInput>level</TextInput>
+        <TextInput variant="major">name</TextInput>
+        <TextInput variant="major">race</TextInput>
+        <TextInput variant="major">class</TextInput>
+        <TextInput variant="major">level</TextInput>
       </div>
     );
   }
