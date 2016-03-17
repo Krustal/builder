@@ -1,22 +1,25 @@
 import React from 'react';
 import DefenseStat from './defense_stat.jsx';
+import StatField from './stat_field.jsx';
+import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
   render() {
+    console.log(HeaderStyle);
     return (
       <div className="combat-stats">
         <DefenseStat label="AC">Armor Class</DefenseStat>
         <DefenseStat label="PD">Physical Defense</DefenseStat>
         <DefenseStat label="MD">Mental Defense</DefenseStat>
-        <div className="save-bonuses combat-stat">
-          <h3 className="minor">
+        <StatField>
+          <h3 className={HeaderStyle.h3Minor}>
           Save Bonuses
           </h3>
           <input type="text" size="2em" />
-        </div>
-        <div className="hit-points combat-stat">
-          <h3 className="major">
-          Hit Points
+        </StatField>
+        <StatField>
+          <h3 className={HeaderStyle.h3Major}>
+            Hit Points
           </h3>
           <div className="ratio-input">
             <div className="numerator">
@@ -30,9 +33,9 @@ export default class CombatStats extends React.Component {
               <label htmlFor>maximum</label>
             </div>
           </div>
-        </div>
-        <div className="recoveries combat-stat">
-          <h3 className="major">Recoveries</h3>
+        </StatField>
+        <StatField>
+          <h3 className={HeaderStyle.h3Major}>Recoveries</h3>
           <div className="ratio-input">
             <div className="numerator">
               <label htmlFor>current</label>
@@ -45,15 +48,15 @@ export default class CombatStats extends React.Component {
               <label htmlFor>maximum</label>
             </div>
           </div>
-        </div>
-        <div className="recovery-roll combat-stat">
-          <h3>
-          Recovery Roll
+        </StatField>
+        <StatField>
+          <h3 className={HeaderStyle.h3}>
+            Recovery Roll
           </h3>
           <input type="text" size="4em" />
           <span className="operator">+</span>
           <input type="text" size="2em" />
-        </div>
+        </StatField>
       </div>
     );
   }

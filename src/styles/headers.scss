@@ -3,3 +3,13 @@
   font-weight: normal;
   composes: double from './theme/typography.scss';
 }
+
+.h3Minor {
+  composes: h3;
+  color: #ccc;
+}
+
+.h3Major {
+  composes: h3;
+  font-size: 1.5em;
+}
