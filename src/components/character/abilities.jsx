@@ -1,8 +1,45 @@
 import React from 'react';
 import CharacterAbilityStyles from '../../styles/components/character_abilities.scss';
 
+var abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
+
 export default class CharacterAbilities extends React.Component {
+  constructor(props) {
+    super(props);
+    this.abilityChanged = this.abilityChanged.bind(this);
+    abilities.forEach((ability) => {
+      this[`${ability}Changed`] = this.abilityChanged.bind(this, ability);
+    });
+  }
+
   render() {
+    var abilityScores = abilities.map((ability) => {
+      return (
+        <td key={ability + 'score'}>
+          <input
+            className="ability"
+            type="text"
+            min={0}
+            max={40}
+            value={this.props.abilities[ability].base}
+            onChange={this[`${ability}Changed`]} />
+        </td>
+      );
+    });
+    var abilityModifiers = abilities.map((ability) => {
+      return (
+        <td key={ability + 'mod'}>
+          <input className="ability" type="text" value={this.props.abilities[ability].modifier} disabled={true} />
+        </td>
+      );
+    });
+    var abilityModifiersPlusLevel = abilities.map((ability) => {
+      return (
+        <td key={ability + 'modlevel'}>
+          <input className="ability" type="text" value={this.props.abilities[ability].modifierPlusLevel} disabled={true} />
+        </td>
+      );
+    });
     return (
       <div className={CharacterAbilityStyles.characterAbilities}>
         <table>
@@ -20,71 +57,13 @@ export default class CharacterAbilities extends React.Component {
           <tbody>
             <tr className="editable">
               <th></th>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
-              <td>
-                <input
-                className="ability"
-                type="text"
-                min={0}
-                max={40} />
-              </td>
+              {abilityScores}
             </tr>
             <tr className="computed">
               <th>
                 <div>modifier</div>
               </th>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
+              {abilityModifiers}
             </tr>
             <tr className="computed output">
               <th>
@@ -92,24 +71,7 @@ export default class CharacterAbilities extends React.Component {
                 modifier + level
                 </div>
               </th>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
-              <td>
-                <input className="ability" type="text" />
-              </td>
+              {abilityModifiersPlusLevel}
             </tr>
           </tbody>
           <tfoot>
@@ -123,4 +85,14 @@ export default class CharacterAbilities extends React.Component {
       </div>
     );
   }
+
+  abilityChanged(ability, evt) {
+    console.log('[Abilities Component] Ability changed', ability, ':', evt.target.value);
+    this.props.onChange(ability, evt.target.value);
+  }
 }
+
+CharacterAbilities.propTypes = {
+  abilities: React.PropTypes.object.isRequired,
+  onChange: React.PropTypes.func
+};

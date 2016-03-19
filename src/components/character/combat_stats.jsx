@@ -10,7 +10,6 @@ import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
   render() {
-    console.log(HeaderStyle);
     return (
       <div className={CombatStatsStyle.combatStats}>
         <DefenseStat label="AC">Armor Class</DefenseStat>

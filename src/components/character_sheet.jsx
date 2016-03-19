@@ -23,6 +23,7 @@ export default class CharacterSheet extends React.Component {
       }
     };
     this.updateOverview = this.updateOverview.bind(this);
+    this.statChange = this.statChange.bind(this);
   }
 
   render() {
@@ -30,7 +31,7 @@ export default class CharacterSheet extends React.Component {
       <form action>
         <div className={logo.main} />
         <CharacterOverview updateCB={this.updateOverview} name={this.state.name} race={this.state.race} gameClass={this.state.gameClass} level={this.state.level} />
-        <Stats />
+        <Stats onChange={this.statChange} abilities={this.state.abilities} />
       </form>
     );
   }
@@ -40,5 +41,15 @@ export default class CharacterSheet extends React.Component {
     var newState = {};
     newState[prop] = value;
     this.setState(newState);
+  }
+
+  statChange(ability, value) {
+    console.log('[Character Sheet Component] Stats changed');
+    this.state.abilities[ability] = {
+      base: value,
+      modifier: parseInt((value - 10) / 2, 10),
+      modifierPlusLevel: parseInt((value - 10) / 2, 10) + this.state.level
+    };
+    this.setState({ abilities: this.state.abilities });
   }
 }
