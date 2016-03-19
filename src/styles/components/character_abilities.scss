@@ -5,9 +5,8 @@
 @value base as baseSpacing from '../spacing.css';
 
 .characterAbilities {
-  float: left;
   margin-right: calc(baseSpacing * 2);
-  
+
   table {
     border-collapse: collapse;
     font-size: calc(baseSpacing * 1.5);

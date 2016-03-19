@@ -8,7 +8,7 @@ export default class DiceInput extends React.Component {
       <div>
         <TextInput length={5} />
         <span className={InputStyle.diceInputOperator}>+</span>
-        <TextInput length={3} />
+        <TextInput length={2} />
       </div>
     );
   }

@@ -3,8 +3,7 @@ import logo from '../styles/logo.css';
 import typography from '../styles/theme/typography.scss';
 
 import CharacterOverview from './character/overview.jsx';
-import CharacterAbilities from './character/abilities.jsx';
-import CombatStats from './character/combat_stats.jsx';
+import Stats from './character/stats.jsx';
 
 export default class CharacterSheet extends React.Component {
   render() {
@@ -12,8 +11,7 @@ export default class CharacterSheet extends React.Component {
       <form action>
         <div className={logo.main} />
         <CharacterOverview />
-        <CharacterAbilities />
-        <CombatStats />
+        <Stats />
       </form>
     );
   }

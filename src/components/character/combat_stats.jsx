@@ -4,21 +4,23 @@ import StatField from './stat_field.jsx';
 import TextInput from '../form/text_input.jsx';
 import RatioInput from '../form/ratio_input.jsx';
 import DiceInput from '../form/dice_input.jsx';
+
+import CombatStatsStyle from '../../styles/components/combat_stats.scss';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class CombatStats extends React.Component {
   render() {
     console.log(HeaderStyle);
     return (
-      <div className="combat-stats">
+      <div className={CombatStatsStyle.combatStats}>
         <DefenseStat label="AC">Armor Class</DefenseStat>
         <DefenseStat label="PD">Physical Defense</DefenseStat>
         <DefenseStat label="MD">Mental Defense</DefenseStat>
         <StatField>
           <h3 className={HeaderStyle.h3Minor}>
-          Save Bonuses
+          Save <br /> Bonuses
           </h3>
-          <TextInput length={5} />
+          <TextInput length={2} />
         </StatField>
         <StatField>
           <h3 className={HeaderStyle.h3Major}>
@@ -31,7 +33,7 @@ export default class CombatStats extends React.Component {
           <RatioInput numerator="current" denominator="maximum" />
         </StatField>
         <StatField>
-          <h3 className={HeaderStyle.h3}>Recovery Roll</h3>
+          <h3 className={HeaderStyle.h3}>Recovery <br /> Roll</h3>
           <DiceInput />
         </StatField>
       </div>
