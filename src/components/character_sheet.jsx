@@ -24,6 +24,9 @@ export default class CharacterSheet extends React.Component {
     };
     this.updateOverview = this.updateOverview.bind(this);
     this.statChange = this.statChange.bind(this);
+    // this.computeModifier = this.computeModifier.bind(this);
+    this.computeModifierPlusLevel = this.computeModifierPlusLevel.bind(this);
+    this.getUpdatedModifiers = this.getUpdatedModifiers.bind(this);
   }
 
   render() {
@@ -40,6 +43,9 @@ export default class CharacterSheet extends React.Component {
     this.state[prop] = value;
     var newState = {};
     newState[prop] = value;
+    if (prop === 'level') {
+      newState.abilities = this.getUpdatedModifiers();
+    }
     this.setState(newState);
   }
 
@@ -47,9 +53,28 @@ export default class CharacterSheet extends React.Component {
     console.log('[Character Sheet Component] Stats changed');
     this.state.abilities[ability] = {
       base: value,
-      modifier: parseInt((value - 10) / 2, 10),
-      modifierPlusLevel: parseInt((value - 10) / 2, 10) + this.state.level
+      modifier: CharacterSheet.computeModifier(value),
+      modifierPlusLevel: this.computeModifierPlusLevel(value)
     };
     this.setState({ abilities: this.state.abilities });
+  }
+
+  getUpdatedModifiers() {
+    return Object.keys(this.state.abilities).reduce((newAbilities, ability) => {
+      console.log('[Character Sheet Component] Recomputing ability mod + level', ability, newAbilities);
+      newAbilities[ability] = Object.assign(this.state.abilities[ability], {
+        modifier: CharacterSheet.computeModifier(this.state.abilities[ability].base),
+        modifierPlusLevel: this.computeModifierPlusLevel(this.state.abilities[ability].base)
+      });
+      return newAbilities;
+    }, {});
+  }
+
+  static computeModifier(abilityScore) {
+    return parseInt((abilityScore - 10) / 2, 10);
+  }
+
+  computeModifierPlusLevel(abilityScore) {
+    return CharacterSheet.computeModifier(abilityScore) + this.state.level;
   }
 }

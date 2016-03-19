@@ -6,27 +6,27 @@ import TextInput from '../form/text_input.jsx';
 export default class CharacterOverview extends React.Component {
   constructor(props) {
     super(props);
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.sendChange = this.sendChange.bind(this);
+    this.handleNameChange = this.props.updateCB.bind(this, 'name');
+    this.handleLevelChange = this.handleLevelChange.bind(this);
   }
 
   render() {
+    var displayLevel = this.props.level > 0 ? this.props.level : '';
     return (
       <div className={components.characterOverview}>
         <TextInput variant="major" length={30} value={this.props.name} updateCB={this.handleNameChange}>name</TextInput>
         <TextInput variant="major" length={30} >race</TextInput>
         <TextInput variant="major" length={30} >class</TextInput>
-        <TextInput variant="major" length={30} >level</TextInput>
+        <TextInput variant="major" length={30} value={displayLevel} updateCB={this.handleLevelChange}>level</TextInput>
       </div>
     );
   }
 
-  sendChange(prop, value) {
-    this.props.updateCB(prop, value);
-  }
-
-  handleNameChange(evt) {
-    this.sendChange('name', evt.target.value);
+  handleLevelChange(level) {
+    console.log('[Overview Component] handle level change', level);
+    level = parseInt(level, 10);
+    level = isNaN(level) ? 0 : level;
+    this.props.updateCB('level', parseInt(level, 10));
   }
 }
 
