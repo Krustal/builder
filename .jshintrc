@@ -1,6 +1,5 @@
 {
   "esnext": true,
-  "exversion": 6,
   "module": true,
   "globals": {
     "describe": false,

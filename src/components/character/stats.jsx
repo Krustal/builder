@@ -17,7 +17,10 @@ export default class Stats extends React.Component {
     return (
       <div className={StatsStyles.stats}>
         <CharacterAbilities abilities={this.props.abilities} onChange={this.abilitiesUpdated}/>
-        <CombatStats />
+        <CombatStats
+          armorClass={this.props.combatStats.armorClass}
+          physicalDefense={this.props.combatStats.physicalDefense}
+          mentalDefense={this.props.combatStats.mentalDefense}/>
       </div>
     );
   }
@@ -30,5 +33,6 @@ export default class Stats extends React.Component {
 
 Stats.propTypes = {
   abilities: React.PropTypes.object.isRequired,
+  combatStats: React.PropTypes.object,
   onChange: React.PropTypes.func
 };

@@ -1,9 +1,14 @@
 import React from 'react';
+import Barbarian from '../constants/classes/barbarian.js';
 import logo from '../styles/logo.css';
 import typography from '../styles/theme/typography.scss';
 
 import CharacterOverview from './character/overview.jsx';
 import Stats from './character/stats.jsx';
+
+var classes = {
+  barbarian: Barbarian
+};
 
 export default class CharacterSheet extends React.Component {
   constructor(props) {
@@ -12,6 +17,7 @@ export default class CharacterSheet extends React.Component {
       name: '',
       race: '',
       gameClass: '',
+      gameClassObject: undefined,
       level: 1,
       abilities: {
         strength: { base: 8, modifier: 0, modifierPlusLevel: 1 },
@@ -20,6 +26,11 @@ export default class CharacterSheet extends React.Component {
         intelligence: { base: 8, modifier: 0, modifierPlusLevel: 1 },
         wisdom: { base: 8, modifier: 0, modifierPlusLevel: 1 },
         charisma: { base: 8, modifier: 0, modifierPlusLevel: 1 }
+      },
+      combatStats: {
+        armorClass: 0,
+        physicalDefense: 0,
+        mentalDefense: 0
       }
     };
     this.updateOverview = this.updateOverview.bind(this);
@@ -27,6 +38,7 @@ export default class CharacterSheet extends React.Component {
     // this.computeModifier = this.computeModifier.bind(this);
     this.computeModifierPlusLevel = this.computeModifierPlusLevel.bind(this);
     this.getUpdatedModifiers = this.getUpdatedModifiers.bind(this);
+    this.computeArmorClass = this.computeArmorClass.bind(this);
   }
 
   render() {
@@ -34,7 +46,7 @@ export default class CharacterSheet extends React.Component {
       <form action>
         <div className={logo.main} />
         <CharacterOverview updateCB={this.updateOverview} name={this.state.name} race={this.state.race} gameClass={this.state.gameClass} level={this.state.level} />
-        <Stats onChange={this.statChange} abilities={this.state.abilities} />
+        <Stats onChange={this.statChange} abilities={this.state.abilities} combatStats={this.state.combatStats}/>
       </form>
     );
   }
@@ -46,6 +58,15 @@ export default class CharacterSheet extends React.Component {
     if (prop === 'level') {
       newState.abilities = this.getUpdatedModifiers();
     }
+    if (prop === 'gameClass') {
+      if (value.toLowerCase() === 'barbarian') {
+        this.state.gameClassObject = newState.gameClassObject = Barbarian;
+      }
+      if (newState.gameClassObject) {
+        newState.combatStats = {};
+        this.state.combatStats.armorClass = newState.combatStats.armorClass = this.computeArmorClass();
+      }
+    }
     this.setState(newState);
   }
 
@@ -56,7 +77,10 @@ export default class CharacterSheet extends React.Component {
       modifier: CharacterSheet.computeModifier(value),
       modifierPlusLevel: this.computeModifierPlusLevel(value)
     };
-    this.setState({ abilities: this.state.abilities });
+    if (this.state.gameClassObject) {
+      this.state.combatStats.armorClass = this.computeArmorClass();
+    }
+    this.setState({ abilities: this.state.abilities, combatStats: this.state.combatStats });
   }
 
   getUpdatedModifiers() {
@@ -76,5 +100,17 @@ export default class CharacterSheet extends React.Component {
 
   computeModifierPlusLevel(abilityScore) {
     return CharacterSheet.computeModifier(abilityScore) + this.state.level;
+  }
+
+  computeArmorClass() {
+    return this.middleModOf('constitution', 'dexterity', 'wisdom') + this.state.gameClassObject.baseAC;
+  }
+
+  middleModOf(...abilities) {
+    return abilities.map((ability) => {
+      return this.state.abilities[ability].modifierPlusLevel;
+    }).sort((a, b) => {
+      return a - b;
+    })[parseInt(abilities.length / 2, 10)];
   }
 }

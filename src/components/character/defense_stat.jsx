@@ -15,7 +15,7 @@ export default class DefenseStat extends React.Component {
         <h3 className={HeaderStyle.h3}>{this.props.children}</h3>
         <div className={InputStyle.defenseStat}>
           <label className={InputStyle.defenseStatLabel}>{label}</label>
-          <input className={InputStyle.defenseStatInput} type="text" maxLength={2} size={10} />
+          <input value={this.props.value} disabled={true} className={InputStyle.defenseStatInput} type="text" maxLength={2} size={10} />
         </div>
       </div>
     );

@@ -7,6 +7,7 @@ export default class CharacterOverview extends React.Component {
   constructor(props) {
     super(props);
     this.handleNameChange = this.props.updateCB.bind(this, 'name');
+    this.handleClassChange = this.props.updateCB.bind(this, 'gameClass');
     this.handleLevelChange = this.handleLevelChange.bind(this);
   }
 
@@ -16,7 +17,7 @@ export default class CharacterOverview extends React.Component {
       <div className={components.characterOverview}>
         <TextInput variant="major" length={30} value={this.props.name} updateCB={this.handleNameChange}>name</TextInput>
         <TextInput variant="major" length={30} >race</TextInput>
-        <TextInput variant="major" length={30} >class</TextInput>
+        <TextInput variant="major" length={30} value={this.props.gameClass} updateCB={this.handleClassChange}>class</TextInput>
         <TextInput variant="major" length={30} value={displayLevel} updateCB={this.handleLevelChange}>level</TextInput>
       </div>
     );

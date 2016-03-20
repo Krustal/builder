@@ -12,9 +12,9 @@ export default class CombatStats extends React.Component {
   render() {
     return (
       <div className={CombatStatsStyle.combatStats}>
-        <DefenseStat label="AC">Armor Class</DefenseStat>
-        <DefenseStat label="PD">Physical Defense</DefenseStat>
-        <DefenseStat label="MD">Mental Defense</DefenseStat>
+        <DefenseStat label="AC" value={this.props.armorClass}>Armor Class</DefenseStat>
+        <DefenseStat label="PD" value={this.props.physicalDefense}>Physical Defense</DefenseStat>
+        <DefenseStat label="MD" value={this.props.mentalDefense}>Mental Defense</DefenseStat>
         <StatField>
           <h3 className={HeaderStyle.h3Minor}>
           Save <br /> Bonuses
