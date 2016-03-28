@@ -1,5 +1,5 @@
 import React from 'react';
-import InputStyle from '../../styles/input.scss';
+import InputStyle from 'styles/input.scss';
 
 export default class TextInput extends React.Component {
   constructor(props) {
@@ -16,7 +16,13 @@ export default class TextInput extends React.Component {
     return (
       <label className={labelClass}>
         {this.props.children}
-        <input value={this.props.value} onChange={this.updateValue} className={InputStyle.simpleText} maxLength={this.props.length} size={this.props.length + 2} />
+        <input
+          ref="input"
+          value={this.props.value}
+          onChange={this.updateValue}
+          className={InputStyle.simpleText}
+          maxLength={this.props.length}
+          size={this.props.length + 2} />
       </label>
     );
   }
