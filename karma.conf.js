@@ -15,7 +15,7 @@ module.exports = function(config) {
       'karma-mocha',
       'karma-sourcemap-loader',
       'karma-webpack',
-      'karma-mocha-reporter',
+      'karma-spec-reporter',
       'karma-chai',
       'karma-sinon',
       'karma-sinon-chai'
@@ -23,7 +23,7 @@ module.exports = function(config) {
     preprocessors: {
       'tests.webpack.js': [ 'webpack', 'sourcemap' ]
     },
-    reporters: ['mocha'],
+    reporters: ['spec'],
     webpack: webpackConfig,
     webpackServer: {
       noInfo: true
