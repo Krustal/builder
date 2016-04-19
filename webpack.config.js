@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -35,5 +36,10 @@ module.exports = {
       { test: /\.css$/, loader: "style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]" },
       { test: /\.scss$/, loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass-loader' }
     ]
-  }
+  },
+  plugins: [new HtmlWebpackPlugin({
+    filename: '../index.html',
+    template: 'src/index.html',
+    inject: 'body'
+  })]
 };

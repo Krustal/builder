@@ -1,4 +1,5 @@
 node_modules/
 public/assets/
+public/index.html
 npm-debug.log
 .DS_STORE
