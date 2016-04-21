@@ -32,12 +32,6 @@
         font-weight: 100;
         border-bottom-left-radius: baseSpacing;
         border-top-left-radius: baseSpacing;
-        // TODO: Find a way to rotate without obscuring input
-        /* Currently causing z-index issues */
-        /*transform: rotateZ(20deg) translateX(4px);
-        transform-origin: bottom right;
-        transform-style: flat;
-        padding-right: 20px;*/
         padding: baseSpacing;
       }
       &:global(.output) th:not(:empty) div{

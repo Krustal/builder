@@ -5,10 +5,11 @@ module.exports = {
   entry: {
     main: [
       "webpack/hot/dev-server",
+      "webpack-hot-middleware/client",
       __dirname + "/src/main.js"
     ]
   },
-  devtool: 'source-map',
+  devtool: '#eval-source-map',
   devServer: {
     contentBase: './public'
   },
@@ -32,14 +33,12 @@ module.exports = {
       { test: /\.js$/, loader: 'source-map' }
     ],
     loaders: [
-      { test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel' },
+      { test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loaders: ['react-hot', 'babel'] },
       { test: /\.css$/, loader: "style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]" },
       { test: /\.scss$/, loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass-loader' }
     ]
   },
-  plugins: [new HtmlWebpackPlugin({
-    filename: '../index.html',
-    template: 'src/index.html',
-    inject: 'body'
-  })]
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
 };

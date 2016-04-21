@@ -53,7 +53,9 @@ module.exports = {
       }
     }),
     new webpack.optimize.DedupePlugin(),
-    new ExtractTextPlugin("[name].[contenthash].css"),
+    new ExtractTextPlugin("[name].[contenthash].css", {
+      allChunks: true
+    }),
     new HtmlWebpackPlugin({
       filename: '../index.html',
       template: 'src/index.html',
