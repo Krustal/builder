@@ -27,6 +27,14 @@ const strengthOrDexterity = {
   }
 };
 
+const wisdomOrIntelligence = {
+  name: '+2 wisdom or dex',
+  options: {
+    wisdom: { field: 'wisdom', modifier: (str) => { return str + 4; } },
+    dexterity: { field: 'dexterity', modifier: (dex) => {return dex + 4; } }
+  }
+};
+
 export default class Character {
   constructor(other = {}, diff = {}) {
     this.name = diff.name || other.name || '';
@@ -47,7 +55,16 @@ export default class Character {
       this.modifiers = other.modifiers || this.modifiers;
     }
 
-    this.choices = [strengthOrDexterity];
+    this.choices = [strengthOrDexterity, wisdomOrIntelligence];
+    if (diff.chosenChoices) {
+      let oldChoices = other.chosenChoices || {};
+      let diffChoices = diff.chosenChoices || {};
+      let mergedChoices = Object.assign({}, oldChoices, diffChoices);
+      this.chosenChoices = mergedChoices;
+    } else {
+      this.chosenChoices = other.chosenChoices || {};
+    }
+
   }
 
   withModifier(property, modifier) {
@@ -76,12 +93,15 @@ export default class Character {
   }
 
   choose(choiceName, optionName) {
-    let choice = this.choices.find((choice) => { return choice.name === choiceName; });
+    let character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
+    
+    let choice = character.choices.find((choice) => { return choice.name === choiceName; });
     if (!choice) {
       throw Error(`No choice by name ${choiceName}`);
     }
     let option = choice.options[optionName];
-    return this.withModifier(option.field, option.modifier);
+    return Character.create(character, { chosenChoices: { [choiceName]: optionName } })
+      .withModifier(option.field, option.modifier);
   }
 
   unmakeChoice(choiceName) {
@@ -89,14 +109,7 @@ export default class Character {
     if (!choice) {
       throw Error(`No choice by name ${choiceName}`);
     }
-
-    let chosenOptionName = Object.keys(choice.options).find((optionName) => {
-      let optionObj = choice.options[optionName];
-      return this.modifiers[optionObj.field].find((modifier) => {
-        return modifier === optionObj.modifier;
-      });
-    });
-
+    let chosenOptionName = this.chosenChoices[choiceName];
     let chosenOption = choice.options[chosenOptionName];
     // If no option is found then there isn't a choice to unmake
     if(!chosenOption) { return this; }
@@ -107,6 +120,18 @@ export default class Character {
     return this.modifiers.strength.reduce((strength, mod) => {
       return mod(strength);
     }, this._strength);
+  }
+
+  get dexterity() {
+    return this.modifiers.dexterity.reduce((dexterity, mod) => {
+      return mod(dexterity);
+    }, this._dexterity);
+  }
+
+  get wisdom() {
+    return this.modifiers.wisdom.reduce((wisdom, mod) => {
+      return mod(wisdom);
+    }, this._wisdom);
   }
 }
 

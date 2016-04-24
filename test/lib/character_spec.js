@@ -66,6 +66,40 @@ describe('Character', () => {
       expect(Character.create().choose('+2 strength or dex', 'strength').strength).to.eq(10);
     });
 
+    it('registers that choice and the chosen option', () => {
+      expect(
+        Character.create()
+          .choose('+2 strength or dex', 'strength')
+          .chosenChoices['+2 strength or dex']
+        ).to.eq('strength');
+    });
+
+    it("doesn't override different choices", () => {
+      let character = Character.create()
+        .choose('+2 strength or dex', 'strength')
+        .choose('+2 wisdom or dex', 'wisdom');
+
+      expect(character.strength).to.eq(10);
+      expect(character.wisdom).to.eq(12);
+    });
+
+    it('can make choices that affect the same property', () => {
+      let character = Character.create()
+        .choose('+2 strength or dex', 'dexterity')
+        .choose('+2 wisdom or dex', 'dexterity');
+
+      expect(character.dexterity).to.eq(14);
+    });
+
+    it('can be made again and overrides old choice', () => {
+      let character = Character.create()
+        .choose('+2 strength or dex', 'dexterity')
+        .choose('+2 strength or dex', 'strength');
+
+      expect(character.strength).to.eq(10);
+      expect(character.dexterity).to.eq(8);
+    });
+
     context.skip('when the consequence of a choice is to set the value of a property', () => {
       it('sets the value', () => {
         expect(Character.create().choose('class', 'barbarian').gameClass).to.eq('barbarian');
