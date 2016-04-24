@@ -15,10 +15,12 @@ module.exports = {
   },
   debug: true,
   output: {
-    path: __dirname + "/public/assets",
+    path: __dirname + "/public/",
     filename: "[name].bundle.js",
     sourceMapFilename: "debugging/[file].map",
-    publicPath: '/assets/',
+    // TODO: I'd like to bring this back at some point to have better
+    // consistency between prod and dev builds.
+    // publicPath: '/assets/',
     pathinfo: true
   },
   resolveLoader: {
@@ -39,6 +41,11 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'src/index.html',
+      inject: 'body'
+    })
   ]
 };
