@@ -7,11 +7,26 @@ export const abilities = [
   'charisma'
 ];
 
+const plusTwoStrConClass = {
+  name: '+2 strength or constitution from class',
+  options: {
+    strength: [{ field: 'strength', modifier: (str) => { return str + 2; } }],
+    constitution: [{ field: 'constitution', modifier: (con) => { return con + 2; } }]
+  },
+  restriction: {
+    strength: (obj) => {
+      return obj.choices['+2 strength or constitution from race'] !== 'strength';
+    }
+  }
+};
+
 const classChoice = {
   name: 'class',
   options: {
     barbarian: [
-      { field: 'gameClass', set: 'Barbarian' }
+      { field: 'gameClass', set: 'Barbarian', unset: '' },
+      { field: 'choices', add: plusTwoStrConClass }
+      // add choice feats
     ],
     fighter: [
       { field: 'gameClass', set: 'Fighter' }
@@ -19,10 +34,16 @@ const classChoice = {
   }
 };
 
+// TODO: The following choices are all filler choices to enable testing of
+// functionality, once functionality is where it is needed they will be removed
+// and tests updated to reflect real choices.
 const strengthOrDexterity = {
   name: '+2 strength or dex',
   options: {
-    strength: [{ field: 'strength', modifier: (str) => { return str + 2; } }],
+    strength: [
+      { field: 'strength', modifier: (str) => { return str + 2; } },
+      { field: 'charisma', modifier: (wis) => { return wis - 5; } }
+    ],
     dexterity: [{ field: 'dexterity', modifier: (dex) => {return dex + 2; } }]
   }
 };
@@ -103,6 +124,9 @@ export default class Character {
     let characterWithChoice = Character.create(character, { chosenChoices: { [choiceName]: optionName } });
 
     let consequences = choice.options[optionName];
+    if (!consequences) {
+      throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
+    }
     return consequences.reduce((character, consequence) => {
       return character.withModifier(consequence.field, consequence.modifier);
     }, characterWithChoice);
@@ -144,6 +168,10 @@ export default class Character {
 
   get wisdom() {
     return this._getModifiedProperty('wisdom');
+  }
+
+  get charisma() {
+    return this._getModifiedProperty('charisma');
   }
 
   static create(other, diff) {

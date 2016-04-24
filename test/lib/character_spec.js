@@ -91,6 +91,13 @@ describe('Character', () => {
       expect(character.dexterity).to.eq(14);
     });
 
+    it('choices can have multiple consequences', () => {
+      let character = Character.create()
+        .choose('+2 strength or dex', 'strength');
+      expect(character.strength).to.eq(10);
+      expect(character.charisma).to.eq(3);
+    });
+
     it('can be made again and overrides old choice', () => {
       let character = Character.create()
         .choose('+2 strength or dex', 'dexterity')
