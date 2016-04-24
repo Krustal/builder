@@ -128,25 +128,25 @@ export default class Character {
     }, characterWithoutChoice);
   }
 
+  _getModifiedProperty(name) {
+    return this.modifiers[name].reduce((property, mod) => {
+      return mod(property);
+    }, this[`_${name}`]);
+  }
+
   get strength() {
-    return this.modifiers.strength.reduce((strength, mod) => {
-      return mod(strength);
-    }, this._strength);
+    return this._getModifiedProperty('strength');
   }
 
   get dexterity() {
-    return this.modifiers.dexterity.reduce((dexterity, mod) => {
-      return mod(dexterity);
-    }, this._dexterity);
+    return this._getModifiedProperty('dexterity');
   }
 
   get wisdom() {
-    return this.modifiers.wisdom.reduce((wisdom, mod) => {
-      return mod(wisdom);
-    }, this._wisdom);
+    return this._getModifiedProperty('wisdom');
+  }
+
+  static create(other, diff) {
+    return new Character(other, diff);
   }
 }
-
-Character.create = (other, diff) => {
-  return new Character(other, diff);
-};
