@@ -1,3 +1,5 @@
+import { fallbacks } from './utils.js';
+
 export const abilities = [
   'strength',
   'dexterity',
@@ -79,22 +81,18 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 
 export default class Character {
   constructor(other = {}, diff = {}) {
-    this.name = diff.name || other.name || '';
-    this.level = diff.level || other.level || 1;
-    this.gameClass = diff.gameClass || other.gameClass || null;
+    this.name = fallbacks(diff.name, other.name, '');
+    this.level = fallbacks(diff.level, other.level, 1);
+    this.gameClass = fallbacks(diff.gameClass, other.gameClass, null);
     this.modifiers = {};
     abilities.forEach((ability) => {
       this[`_${ability}`] = 8;
       this.modifiers[ability] = [];
     });
 
-    if (diff.modifiers) {
-      this.modifiers = Object.assign({}, diff.modifiers);
-    } else {
-      this.modifiers = other.modifiers || this.modifiers;
-    }
+    this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
 
-    this.choices = [strengthOrDexterity, wisdomOrIntelligence];
+    this.choices = [strengthOrDexterity, wisdomOrIntelligence, classChoice];
     if (diff.chosenChoices) {
       let oldChoices = other.chosenChoices || {};
       let diffChoices = diff.chosenChoices || {};
@@ -119,10 +117,22 @@ export default class Character {
       throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
     }
 
-    return Character.create(character, {
-      modifiers: combineModifiers(character.modifiers, consequences),
-      chosenChoices: { [choiceName]: optionName }
-    });
+    let diff = { chosenChoices: { [choiceName]: optionName } };
+
+    let consequenceModifiers = consequences.filter( c => (c.modifier));
+    if (consequenceModifiers.length > 0) {
+      diff.modifiers = combineModifiers(character.modifiers, consequenceModifiers);
+    }
+
+    let consequenceSetters = consequences.filter( c => (c.set));
+    if (consequenceSetters.length > 0) {
+      diff = consequenceSetters.reduce((diff, consequence) => {
+        diff[consequence.field] = consequence.set;
+        return diff;
+      }, diff);
+    }
+
+    return Character.create(character, diff);
   }
 
   unmakeChoice(choiceName) {
@@ -136,10 +146,22 @@ export default class Character {
     let consequences = choice.options[chosenOptionName];
     if(!consequences) { return this; }
 
-    return Character.create(this, {
-      modifiers: removeModifiers(this.modifiers, consequences),
-      chosenChoices: { [choiceName]: null }
-    });
+    let diff = { chosenChoices: { [choiceName]: null } };
+
+    let consequenceModifiers = consequences.filter( c => (c.modifier));
+    if (consequenceModifiers.length > 0) {
+      diff.modifiers = removeModifiers(this.modifiers, consequences);
+    }
+
+    let consequenceSetters = consequences.filter( c => (c.set));
+    if (consequenceSetters.length > 0) {
+      diff = consequenceSetters.reduce((diff, consequence) => {
+        diff[consequence.field] = consequence.unset;
+        return diff;
+      }, diff);
+    }
+
+    return Character.create(this, diff);
   }
 
   _getModifiedProperty(name) {

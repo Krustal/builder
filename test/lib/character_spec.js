@@ -92,9 +92,9 @@ describe('Character', () => {
       expect(character.dexterity).to.eq(8);
     });
 
-    context.skip('when the consequence of a choice is to set the value of a property', () => {
+    context('when the consequence of a choice is to set the value of a property', () => {
       it('sets the value', () => {
-        expect(Character.create().choose('class', 'barbarian').gameClass).to.eq('barbarian');
+        expect(Character.create().choose('class', 'barbarian').gameClass).to.eq('Barbarian');
       });
     });
 
@@ -118,6 +118,19 @@ describe('Character', () => {
           .unmakeChoice('+2 strength or dex')
           .chosenChoices['+2 strength or dex']
         ).to.eq(null);
+    });
+
+    context('when the consequence of a choice is to set the value of a property', () => {
+      context('and the consequence has an unset property', () => {
+        it('sets the value to the unset', () => {
+          expect(
+            Character.create()
+              .choose('class', 'barbarian')
+              .unmakeChoice('class')
+              .gameClass
+            ).to.eq('');
+        });
+      });
     });
 
     it('throws an error if given an invalid choice name', () => {
