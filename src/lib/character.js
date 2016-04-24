@@ -25,7 +25,7 @@ const classChoice = {
   options: {
     barbarian: [
       { field: 'gameClass', set: 'Barbarian', unset: '' },
-      { field: 'choices', add: plusTwoStrConClass }
+      // { field: 'choices', add: plusTwoStrConClass }
       // add choice feats
     ],
     fighter: [
@@ -56,6 +56,27 @@ const wisdomOrIntelligence = {
   }
 };
 
+export function combineModifiers(currentModifiers, newModifiers) {
+  let combinedModifiers = newModifiers.reduce((modifiers, consequence) => {
+    modifiers[consequence.field] = [consequence.modifier, ...modifiers[consequence.field]];
+    return modifiers;
+  }, Object.assign({}, currentModifiers));
+
+  return combinedModifiers;
+}
+
+export function removeModifiers(currentModifiers, modifiersToRemove) {
+  let remainingModifiers = modifiersToRemove.reduce((modifiers, consequence) => {
+    let propMods = modifiers[consequence.field];
+    let consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
+    modifiers[consequence.field] = propMods
+      .slice(0, consequenceToRemoveIndex)
+      .concat(propMods.slice(consequenceToRemoveIndex + 1));
+    return modifiers;
+  }, Object.assign({}, currentModifiers));
+  return remainingModifiers;
+}
+
 export default class Character {
   constructor(other = {}, diff = {}) {
     this.name = diff.name || other.name || '';
@@ -68,10 +89,7 @@ export default class Character {
     });
 
     if (diff.modifiers) {
-      let oldModifiers = other.modifiers || {};
-      let diffModifiers = diff.modifiers || {};
-      let mergedModifiers = Object.assign({}, oldModifiers, diff.modifiers);
-      this.modifiers = mergedModifiers;
+      this.modifiers = Object.assign({}, diff.modifiers);
     } else {
       this.modifiers = other.modifiers || this.modifiers;
     }
@@ -88,31 +106,6 @@ export default class Character {
 
   }
 
-  withModifier(property, modifier) {
-    let modifiers = this.modifiers[property];
-    if (!modifiers) {
-      throw Error(`Invalid modifiable property, ${property}`);
-    }
-
-    let newModifiers = {
-      [property]: [modifier, ...modifiers]
-    };
-    return new Character(this, {
-      modifiers: Object.assign({}, this.modifiers, newModifiers)
-    });
-  }
-
-  removeModifier(field, modifier) {
-    let modifiers = this.modifiers[field];
-    let modifierIndex = modifiers.indexOf(modifier);
-    let newModifiers = {
-      [field]: modifiers.slice(0,modifierIndex).concat(modifiers.slice(modifierIndex + 1))
-    };
-    return new Character(this, {
-      modifiers: Object.assign({}, this.modifiers, newModifiers)
-    });
-  }
-
   choose(choiceName, optionName) {
     let character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
 
@@ -121,15 +114,15 @@ export default class Character {
       throw Error(`No choice by name ${choiceName}`);
     }
 
-    let characterWithChoice = Character.create(character, { chosenChoices: { [choiceName]: optionName } });
-
     let consequences = choice.options[optionName];
     if (!consequences) {
       throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
     }
-    return consequences.reduce((character, consequence) => {
-      return character.withModifier(consequence.field, consequence.modifier);
-    }, characterWithChoice);
+
+    return Character.create(character, {
+      modifiers: combineModifiers(character.modifiers, consequences),
+      chosenChoices: { [choiceName]: optionName }
+    });
   }
 
   unmakeChoice(choiceName) {
@@ -139,17 +132,14 @@ export default class Character {
     }
     let chosenOptionName = this.chosenChoices[choiceName];
 
-    // unregister the choice
-    let characterWithoutChoice = Character.create(this, { chosenChoices: { [choiceName]: null } });
-
     // If no option is found then there aren't consequences to revert
     let consequences = choice.options[chosenOptionName];
     if(!consequences) { return this; }
 
-    // Remove all the consequences of the choice removed
-    return consequences.reduce((character, consequence) => {
-      return character.removeModifier(consequence.field, consequence.modifier);
-    }, characterWithoutChoice);
+    return Character.create(this, {
+      modifiers: removeModifiers(this.modifiers, consequences),
+      chosenChoices: { [choiceName]: null }
+    });
   }
 
   _getModifiedProperty(name) {

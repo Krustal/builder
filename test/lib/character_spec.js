@@ -1,4 +1,4 @@
-import Character from '../../src/lib/character.js';
+import Character, { combineModifiers, removeModifiers } from '../../src/lib/character.js';
 
 describe('Character', () => {
   describe('#constructor', () => {
@@ -43,21 +43,6 @@ describe('Character', () => {
         let otherCharacter = new Character(initialCharacter, { name: 'Byron' });
         expect(otherCharacter.name).to.eq('Byron');
       });
-    });
-  });
-
-  describe('#withModifier', () => {
-    it('adds a modifier to the character', () => {
-      let character = Character.create().withModifier('strength', (strength) => {
-        return strength + 2;
-      });
-      expect(character.modifiers.strength.length).to.eq(1);
-      expect(character.strength).to.eq(10);
-    });
-    it('throws an exception if the modified property is invalid', () => {
-      expect(() => {
-        Character.create().withModifier('bogus', (t) => {});
-      }).to.throw(Error);
     });
   });
 
@@ -139,6 +124,33 @@ describe('Character', () => {
       expect(() => {
         Character.create().unmakeChoice('bogus');
       }).to.throw(Error);
+    });
+  });
+});
+
+describe('combineModifiers', () => {
+  describe('it takes the modifiers of a character and an array of new modifiers', () => {
+    it('returns a new modifiers object with new modifiers added', () => {
+      let character = Character.create().choose('+2 strength or dex', 'strength');
+      let newModifiers = [
+        { field: 'dexterity', modifier: (dex) => { return dex + 5; } }
+      ];
+      let combinedModifiers = combineModifiers(character.modifiers, newModifiers);
+      expect(combinedModifiers.strength.length).to.eq(1);
+      expect(combinedModifiers.dexterity.length).to.eq(1);
+    });
+  });
+});
+
+describe('removeModifiers', () => {
+  describe('it takes the modifiers of a character an array of new modifiers', () => {
+    it('returns a new modifiers object with modifiers removed', () => {
+      let character = Character.create().choose('+2 strength or dex', 'strength');
+      let revertedModifiers = [
+        { field: 'strength', modifier: character.modifiers.strength[0] }
+      ];
+      let remainingModifiers = removeModifiers(character.modifiers, revertedModifiers);
+      expect(remainingModifiers.strength.length).to.eq(0);
     });
   });
 });
