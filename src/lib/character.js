@@ -22,16 +22,16 @@ const classChoice = {
 const strengthOrDexterity = {
   name: '+2 strength or dex',
   options: {
-    strength: { field: 'strength', modifier: (str) => { return str + 2; } },
-    dexterity: { field: 'dexterity', modifier: (dex) => {return dex + 2; } }
+    strength: [{ field: 'strength', modifier: (str) => { return str + 2; } }],
+    dexterity: [{ field: 'dexterity', modifier: (dex) => {return dex + 2; } }]
   }
 };
 
 const wisdomOrIntelligence = {
   name: '+2 wisdom or dex',
   options: {
-    wisdom: { field: 'wisdom', modifier: (str) => { return str + 4; } },
-    dexterity: { field: 'dexterity', modifier: (dex) => {return dex + 4; } }
+    wisdom: [{ field: 'wisdom', modifier: (str) => { return str + 4; } }],
+    dexterity: [{ field: 'dexterity', modifier: (dex) => {return dex + 4; } }]
   }
 };
 
@@ -94,14 +94,18 @@ export default class Character {
 
   choose(choiceName, optionName) {
     let character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
-    
+
     let choice = character.choices.find((choice) => { return choice.name === choiceName; });
     if (!choice) {
       throw Error(`No choice by name ${choiceName}`);
     }
-    let option = choice.options[optionName];
-    return Character.create(character, { chosenChoices: { [choiceName]: optionName } })
-      .withModifier(option.field, option.modifier);
+
+    let characterWithChoice = Character.create(character, { chosenChoices: { [choiceName]: optionName } });
+
+    let consequences = choice.options[optionName];
+    return consequences.reduce((character, consequence) => {
+      return character.withModifier(consequence.field, consequence.modifier);
+    }, characterWithChoice);
   }
 
   unmakeChoice(choiceName) {
@@ -110,10 +114,18 @@ export default class Character {
       throw Error(`No choice by name ${choiceName}`);
     }
     let chosenOptionName = this.chosenChoices[choiceName];
-    let chosenOption = choice.options[chosenOptionName];
-    // If no option is found then there isn't a choice to unmake
-    if(!chosenOption) { return this; }
-    return this.removeModifier(chosenOption.field, chosenOption.modifier);
+
+    // unregister the choice
+    let characterWithoutChoice = Character.create(this, { chosenChoices: { [choiceName]: null } });
+
+    // If no option is found then there aren't consequences to revert
+    let consequences = choice.options[chosenOptionName];
+    if(!consequences) { return this; }
+
+    // Remove all the consequences of the choice removed
+    return consequences.reduce((character, consequence) => {
+      return character.removeModifier(consequence.field, consequence.modifier);
+    }, characterWithoutChoice);
   }
 
   get strength() {

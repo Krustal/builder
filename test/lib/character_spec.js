@@ -119,6 +119,15 @@ describe('Character', () => {
       expect(character.unmakeChoice('+2 strength or dex').strength).to.eq(8);
     });
 
+    it('de-registers that choice and the chosen option', () => {
+      expect(
+        Character.create()
+          .choose('+2 strength or dex', 'strength')
+          .unmakeChoice('+2 strength or dex')
+          .chosenChoices['+2 strength or dex']
+        ).to.eq(null);
+    });
+
     it('throws an error if given an invalid choice name', () => {
       expect(() => {
         Character.create().unmakeChoice('bogus');
