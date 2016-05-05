@@ -38,6 +38,12 @@ npm test
 
 Runs the karma test environment.
 
+```
+npm test -- --no-single-run
+```
+
+Runs tests and then re-runs on change
+
 **Useful dev commands**
 
 ```
