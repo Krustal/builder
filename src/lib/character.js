@@ -1,4 +1,5 @@
 import { fallbacks } from './utils.js';
+import RaceChoice from './races.js';
 
 export const abilities = [
   'strength',
@@ -8,6 +9,8 @@ export const abilities = [
   'wisdom',
   'charisma'
 ];
+
+
 
 const plusTwoStrConClass = {
   name: '+2 strength or constitution from class',
@@ -19,20 +22,6 @@ const plusTwoStrConClass = {
     strength: (obj) => {
       return obj.choices['+2 strength or constitution from race'] !== 'strength';
     }
-  }
-};
-
-const classChoice = {
-  name: 'class',
-  options: {
-    barbarian: [
-      { field: 'gameClass', set: 'Barbarian', unset: '' },
-      // { field: 'choices', add: plusTwoStrConClass }
-      // add choice feats
-    ],
-    fighter: [
-      { field: 'gameClass', set: 'Fighter' }
-    ]
   }
 };
 
@@ -82,6 +71,7 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 export default class Character {
   constructor(other = {}, diff = {}) {
     this.name = fallbacks(diff.name, other.name, '');
+    this.race = fallbacks(diff.race, other.race, '');
     this.level = +fallbacks(diff.level, other.level, 1);
     this.gameClass = fallbacks(diff.gameClass, other.gameClass, null);
     this.modifiers = {};
@@ -93,7 +83,11 @@ export default class Character {
 
     this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
 
-    this.choices = [strengthOrDexterity, wisdomOrIntelligence, classChoice];
+    this.choices = [
+      RaceChoice,
+      // Test choices, remove once there are real choices
+      strengthOrDexterity, wisdomOrIntelligence
+    ];
     if (diff.chosenChoices) {
       let oldChoices = other.chosenChoices || {};
       let diffChoices = diff.chosenChoices || {};
@@ -102,7 +96,11 @@ export default class Character {
     } else {
       this.chosenChoices = other.chosenChoices || {};
     }
+  }
 
+  optionsFor(name) {
+    let choice = this.choices.find((choice) => (choice.name === name));
+    return Object.keys(choice.options);
   }
 
   choose(choiceName, optionName) {

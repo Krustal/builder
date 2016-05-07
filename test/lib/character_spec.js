@@ -103,7 +103,7 @@ describe('Character', () => {
 
     context('when the consequence of a choice is to set the value of a property', () => {
       it('sets the value', () => {
-        expect(Character.create().choose('class', 'barbarian').gameClass).to.eq('Barbarian');
+        expect(Character.create().choose('race', 'Human').race).to.eq('Human');
       });
     });
 
@@ -134,9 +134,9 @@ describe('Character', () => {
         it('sets the value to the unset', () => {
           expect(
             Character.create()
-              .choose('class', 'barbarian')
-              .unmakeChoice('class')
-              .gameClass
+              .choose('race', 'Human')
+              .unmakeChoice('race')
+              .race
             ).to.eq('');
         });
       });
@@ -146,6 +146,13 @@ describe('Character', () => {
       expect(() => {
         Character.create().unmakeChoice('bogus');
       }).to.throw(Error);
+    });
+  });
+
+  describe('#optionsFor', () => {
+    it('returns a list of the options on the given choice', () => {
+      const character = Character.create();
+      expect(character.optionsFor('race')).to.include('Human');
     });
   });
 });

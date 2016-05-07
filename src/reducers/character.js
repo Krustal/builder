@@ -5,6 +5,8 @@ export default (state = Character.create(), action = {}) => {
   switch(action.type) {
     case 'NAME_CHANGE':
       return Character.create(state, { name: action.name });
+    case 'CHARACTER_RACE_CHANGE':
+      return state.choose('race', action.race);
     case 'LEVEL_CHANGE':
       return Character.create(state, { level: action.level });
     case 'CHARACTER_ABILITY_CHANGE':
