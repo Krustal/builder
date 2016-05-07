@@ -9,10 +9,10 @@ import RaceProp from './race_prop.jsx';
 
 const CharacterOverview = ({ gameClass }) => (
   <div className={components.characterOverview}>
-    <NameProp variant="major" length={30}>Name</NameProp>
-    <RaceProp variant="major">Race</RaceProp>
-    <TextInput variant="major" length={30} value={gameClass} updateCB={() => console.log('[Warning] Not Implemented')}>class</TextInput>
-    <LevelProp variant="major" length={30}>Level</LevelProp>
+    <NameProp className={components.characterOverviewProp} variant="major">Name</NameProp>
+    <RaceProp className={components.characterOverviewProp} variant="major">Race</RaceProp>
+    <TextInput className={components.characterOverviewProp} variant="major" value={gameClass} updateCB={() => console.log('[Warning] Not Implemented')}>class</TextInput>
+    <LevelProp className={components.characterOverviewProp} variant="major">Level</LevelProp>
   </div>
 );
 export default CharacterOverview;

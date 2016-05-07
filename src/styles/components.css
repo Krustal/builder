@@ -1,4 +1,8 @@
 .characterOverview {
   composes: quad from "./theme/typography.scss";
-  composes: flex alignItemEnd row wrap alignContentEnd from "./flex.css";
+  composes: flex alignItemEnd wrap from "./flex.css";
+}
+
+.characterOverviewProp {
+  flex: 1 40%;
 }

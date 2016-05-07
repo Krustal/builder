@@ -13,6 +13,7 @@ export default class TextInput extends React.Component {
     } else {
       labelClass = InputStyle.label;
     }
+    labelClass = labelClass + ' ' + (this.props.className || '');
     return (
       <label className={labelClass}>
         {this.props.children}

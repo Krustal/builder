@@ -1,5 +1,6 @@
 import React from 'react';
 import InputStyle from 'styles/input.scss';
+import ComponentStyle from 'styles/components.css';
 
 export default class SelectInput extends React.Component {
   render() {
@@ -9,8 +10,9 @@ export default class SelectInput extends React.Component {
     } else {
       labelClass = InputStyle.label;
     }
+    let classes = labelClass + ' ' + (this.props.className || '');
     return (
-      <label className={labelClass}>
+      <label className={classes}>
         {this.props.children}
         <select
           ref="input"
