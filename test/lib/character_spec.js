@@ -5,6 +5,9 @@ describe('Character', () => {
     it('sets default base strength ability score of 8', () => {
       expect((new Character())._strength).to.eq(8);
     });
+    it('computes the ability modifier', () => {
+      expect(Character.create().strengthMod).to.eq(-1);
+    });
     it('sets default base dexterity ability score of 8', () => {
       expect((new Character())._dexterity).to.eq(8);
     });
@@ -42,6 +45,12 @@ describe('Character', () => {
         let initialCharacter = Character.create();
         let otherCharacter = new Character(initialCharacter, { name: 'Byron' });
         expect(otherCharacter.name).to.eq('Byron');
+      });
+
+      it('for properties with possible modifiers the updated field is the base', () => {
+        let initialCharacter = Character.create();
+        let otherCharacter = Character.create(initialCharacter, { abilities: { strength: 12 } });
+        expect(otherCharacter.strength).to.eq(12);
       });
     });
   });

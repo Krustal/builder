@@ -82,11 +82,12 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 export default class Character {
   constructor(other = {}, diff = {}) {
     this.name = fallbacks(diff.name, other.name, '');
-    this.level = fallbacks(diff.level, other.level, 1);
+    this.level = +fallbacks(diff.level, other.level, 1);
     this.gameClass = fallbacks(diff.gameClass, other.gameClass, null);
     this.modifiers = {};
     abilities.forEach((ability) => {
-      this[`_${ability}`] = 8;
+      let diffAbility = diff.abilities ? diff.abilities[ability] : null;
+      this[`_${ability}`] = +fallbacks(diffAbility, other[`_${ability}`], 8);
       this.modifiers[ability] = [];
     });
 
@@ -170,20 +171,66 @@ export default class Character {
     }, this[`_${name}`]);
   }
 
+  // TODO: I'd live to meta-program this whole thing but features like Proxy
+  // currently don't have the support to make that viable.
   get strength() {
     return this._getModifiedProperty('strength');
+  }
+  get strengthMod() {
+    return parseInt((this.strength - 10) / 2, 10);
+  }
+  get strengthModPlusLevel() {
+    return this.strengthMod + this.level;
+  }
+
+  get constitution() {
+    return this._getModifiedProperty('constitution');
+  }
+  get constitutionMod() {
+    return parseInt((this.constitution - 10) / 2, 10);
+  }
+  get constitutionModPlusLevel() {
+    return this.constitutionMod + this.level;
   }
 
   get dexterity() {
     return this._getModifiedProperty('dexterity');
   }
+  get dexterityMod() {
+    return parseInt((this.dexterity - 10) / 2, 10);
+  }
+  get dexterityModPlusLevel() {
+    return this.dexterityMod + this.level;
+  }
+
+  get intelligence() {
+    return this._getModifiedProperty('intelligence');
+  }
+  get intelligenceMod() {
+    return parseInt((this.intelligence - 10) / 2, 10);
+  }
+  get intelligenceModPlusLevel() {
+    return this.intelligenceMod + this.level;
+  }
 
   get wisdom() {
     return this._getModifiedProperty('wisdom');
   }
+  get wisdomMod() {
+    return parseInt((this.wisdom - 10) / 2, 10);
+  }
+  get wisdomModPlusLevel() {
+    return this.wisdomMod + this.level;
+  }
 
   get charisma() {
     return this._getModifiedProperty('charisma');
+  }
+  get charismaMod() {
+    return parseInt((this.charisma - 10) / 2, 10);
+  }
+  get charismaModPlusLevel() {
+    return this.charismaMod + this.level;
   }
 
   static create(other, diff) {

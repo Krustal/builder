@@ -4,15 +4,17 @@ import CharacterAbilityStyles from '../../styles/components/character_abilities.
 var abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
 
 export default class CharacterAbilities extends React.Component {
-  constructor(props) {
-    super(props);
-    this.abilityChanged = this.abilityChanged.bind(this);
-    abilities.forEach((ability) => {
-      this[`${ability}Changed`] = this.abilityChanged.bind(this, ability);
-    });
+  componentDidMount() {
+    this.unsubscribe = this.props.store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   render() {
+    const { store } = this.props;
+    const state = store.getState();
     var abilityScores = abilities.map((ability) => {
       return (
         <td key={ability + 'score'}>
@@ -21,22 +23,24 @@ export default class CharacterAbilities extends React.Component {
             type="text"
             min={0}
             max={40}
-            value={this.props.abilities[ability].base}
-            onChange={this[`${ability}Changed`]} />
+            value={state.character[ability]}
+            onChange={(evt) => (
+              store.dispatch({ type: 'CHARACTER_ABILITY_CHANGE', ability, value: evt.target.value })
+            )} />
         </td>
       );
     });
     var abilityModifiers = abilities.map((ability) => {
       return (
         <td key={ability + 'mod'}>
-          <input className="ability" type="text" value={this.props.abilities[ability].modifier} disabled={true} />
+          <input className="ability" type="text" value={state.character[`${ability}Mod`]} disabled={true} />
         </td>
       );
     });
     var abilityModifiersPlusLevel = abilities.map((ability) => {
       return (
         <td key={ability + 'modlevel'}>
-          <input className="ability" type="text" value={this.props.abilities[ability].modifierPlusLevel} disabled={true} />
+          <input className="ability" type="text" value={state.character[`${ability}ModPlusLevel`]} disabled={true} />
         </td>
       );
     });
@@ -85,14 +89,4 @@ export default class CharacterAbilities extends React.Component {
       </div>
     );
   }
-
-  abilityChanged(ability, evt) {
-    console.log('[Abilities Component] Ability changed', ability, ':', evt.target.value);
-    this.props.onChange(ability, evt.target.value);
-  }
 }
-
-CharacterAbilities.propTypes = {
-  abilities: React.PropTypes.object.isRequired,
-  onChange: React.PropTypes.func
-};
