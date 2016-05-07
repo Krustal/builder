@@ -14,11 +14,6 @@ export default class CharacterSheet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      race: '',
-      gameClass: '',
-      gameClassObject: undefined,
-      level: 1,
       abilities: {
         strength: { base: 8, modifier: 0, modifierPlusLevel: 1 },
         constitution: { base: 8, modifier: 0, modifierPlusLevel: 1 },
@@ -41,33 +36,20 @@ export default class CharacterSheet extends React.Component {
     this.computeArmorClass = this.computeArmorClass.bind(this);
   }
 
+  getChildContext() {
+    return {
+      store: this.props.store
+    };
+  }
+
   render() {
     return (
       <form action>
         <div className={logo.main} />
-        <CharacterOverview updateCB={this.updateOverview} name={this.state.name} race={this.state.race} gameClass={this.state.gameClass} level={this.state.level} />
+        <CharacterOverview store={this.props.store} />
         <Stats onChange={this.statChange} abilities={this.state.abilities} combatStats={this.state.combatStats}/>
       </form>
     );
-  }
-
-  updateOverview(prop, value) {
-    this.state[prop] = value;
-    var newState = {};
-    newState[prop] = value;
-    if (prop === 'level') {
-      newState.abilities = this.getUpdatedModifiers();
-    }
-    if (prop === 'gameClass') {
-      if (value.toLowerCase() === 'barbarian') {
-        this.state.gameClassObject = newState.gameClassObject = Barbarian;
-      }
-      if (newState.gameClassObject) {
-        newState.combatStats = {};
-        this.state.combatStats.armorClass = newState.combatStats.armorClass = this.computeArmorClass();
-      }
-    }
-    this.setState(newState);
   }
 
   statChange(ability, value) {
@@ -114,3 +96,6 @@ export default class CharacterSheet extends React.Component {
     })[parseInt(abilities.length / 2, 10)];
   }
 }
+CharacterSheet.childContextTypes = {
+  store: React.PropTypes.object
+};
