@@ -30,7 +30,9 @@ npm start
 Starts a browser-sync session on localhost:3000 with browser-sync ui on
 localhost:3001.
 
-**Test**
+# Development
+
+**Running tests**
 
 ```
 npm test
@@ -44,7 +46,19 @@ npm test -- --no-single-run
 
 Runs tests and then re-runs on change
 
-**Useful dev commands**
+**Run style-guide**
+
+This project uses `react-storybook` to run a live updating styleguide for all
+presentational components.
+
+```
+npm run styleguide
+```
+
+The styleguide "stories" live in `[repo root]/styleguide/stories` and take the
+same directory structure as the components library in `src`.
+
+**Building manually**
 
 ```
 npm run webpack
@@ -58,7 +72,7 @@ npm run build
 
 Runs a manual build of the project in PRODUCTION mode. This build takes longer
 and performs some extra steps to compress output and remove test helpers. It
-also extracts CSS into a seperate css module and injects the link to it in the
+also extracts CSS into a separate css module and injects the link to it in the
 header.
 
 ```
