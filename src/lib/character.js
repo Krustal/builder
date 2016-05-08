@@ -1,5 +1,6 @@
 import { fallbacks } from './utils.js';
 import RaceChoice from './races.js';
+import ClassChoice from './classes.js';
 
 export const abilities = [
   'strength',
@@ -9,8 +10,6 @@ export const abilities = [
   'wisdom',
   'charisma'
 ];
-
-
 
 const plusTwoStrConClass = {
   name: '+2 strength or constitution from class',
@@ -84,7 +83,7 @@ export default class Character {
     this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
 
     this.choices = [
-      RaceChoice,
+      RaceChoice, ClassChoice,
       // Test choices, remove once there are real choices
       strengthOrDexterity, wisdomOrIntelligence
     ];
