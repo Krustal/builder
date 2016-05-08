@@ -13,8 +13,9 @@ export default (state = Character.create(), action = {}) => {
       return Character.create(state, { level: action.level });
     case 'CHARACTER_ABILITY_CHANGE':
       let change = { abilities: { [action.ability]: action.value } };
-      console.log('character ability change', change);
       return Character.create(state, change);
+    case 'CHARACTER_HP_CHANGE':
+      return Character.create(state, { currentHP: action.hp });
     default:
       return state;
   }

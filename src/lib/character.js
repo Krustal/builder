@@ -78,6 +78,11 @@ export default class Character {
     this.baseAC = fallbacks(diff.baseAC, other.baseAC, null);
     this.basePD = fallbacks(diff.basePD, other.basePD, null);
     this.baseMD = fallbacks(diff.baseMD, other.baseMD, null);
+    this.baseHP = fallbacks(diff.baseHP, other.baseHP, null);
+    if (diff.baseHP)
+      this.currentHP = this.hp();
+    else
+      this.currentHP = fallbacks(diff.currentHP, other.currentHP, this.hp());
     this.modifiers = {};
     abilities.forEach((ability) => {
       let diffAbility = diff.abilities ? diff.abilities[ability] : null;
@@ -194,6 +199,31 @@ export default class Character {
       return this.baseMD + middleMod(this.intelligenceMod, this.wisdomMod, this.charismaMod) + this.level;
     } else {
       return null;
+    }
+  }
+
+  hp() {
+    // TODO: stubbed
+    return this.baseHP;
+  }
+
+  isUnconscious() {
+    let currentHP = parseInt(this.currentHP, 10);
+    let totalHP = parseInt(this.hp(), 10);
+    if (!isNaN(totalHP) && !isNaN(currentHP)) {
+      return currentHP <= 0;
+    } else {
+      return false;
+    }
+  }
+
+  isDead() {
+    let currentHP = parseInt(this.currentHP, 10);
+    let totalHP = parseInt(this.hp(), 10);
+    if (!isNaN(totalHP) && !isNaN(currentHP)) {
+      return currentHP <= -(totalHP / 2);
+    } else {
+      return false;
     }
   }
 

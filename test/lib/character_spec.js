@@ -178,6 +178,24 @@ describe('Character', () => {
       expect(character.ac()).to.eq(13);
     });
   });
+
+  describe("#isUnconscious", () => {
+    it('is true if character hp is below 0', () => {
+      let character = Character.create({ baseHP: 10 });
+      expect(character.isUnconscious()).to.eq(false);
+      let newCharacter = Character.create(character, { currentHP: 0 });
+      expect(newCharacter.isUnconscious()).to.eq(true);
+    });
+  });
+
+  describe("#isDead", () => {
+    it('is true if character hp is below negative half of total', () => {
+      let character = Character.create({ baseHP: 10 });
+      expect(character.isDead()).to.eq(false);
+      let newCharacter = Character.create(character, { currentHP: -5 });
+      expect(newCharacter.isDead()).to.eq(true);
+    });
+  });
 });
 
 describe('combineModifiers', () => {

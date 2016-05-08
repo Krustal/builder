@@ -6,6 +6,7 @@ import DiceInput from '../form/dice_input.jsx';
 import ACField from './fields/ac.jsx';
 import PDField from './fields/pd.jsx';
 import MDField from './fields/md.jsx';
+import HitPointsField from './fields/hit_points.jsx';
 
 import CombatStatsStyle from '../../styles/components/combat_stats.css';
 import HeaderStyle from '../../styles/headers.scss';
@@ -26,7 +27,7 @@ import StatFieldStyles from '../../styles/components/combat_stat.css';
       <h3 className={HeaderStyle.h3}>
         Hit Points
       </h3>
-      <RatioInput numeratorLabel="current" denominatorLabel="maximum" />
+      <HitPointsField />
     </div>
     <div className={StatFieldStyles.basic}>
       <h3 className={HeaderStyle.h3}>Recoveries</h3>
