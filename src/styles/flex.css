@@ -2,10 +2,16 @@
   display: flex;
 }
 
+// align items
 .alignItemEnd {
   align-items: flex-end;
 }
 
+.alignItemsBase {
+  align-items: baseline;
+}
+
+// Direction of flow
 .row {
   flex-direction: row;
 }

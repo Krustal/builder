@@ -1,6 +1,6 @@
 import React from 'react';
 import InputStyle from '../../styles/input.scss';
-import CombatStatStyle from '../../styles/components/combat_stat.scss';
+import CombatStatStyle from '../../styles/components/combat_stat.css';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class DefenseStat extends React.Component {

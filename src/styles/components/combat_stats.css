@@ -1,0 +1,5 @@
+.combatStats {
+  composes: flex alignItemsBase wrap from "../flex.css";
+  flex: 1 0 auto;
+  width: 500px;
+}

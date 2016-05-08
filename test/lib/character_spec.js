@@ -155,6 +155,29 @@ describe('Character', () => {
       expect(character.optionsFor('race')).to.include('Human');
     });
   });
+
+  describe('#ac', () => {
+    it('requires a class to be chosen', () => {
+      let character = Character.create();
+      expect(character.ac()).to.eq(null);
+    });
+
+    it('is computed from baseAC, middleMod, and level', () => {
+      let character = Character
+        .create({
+          abilities: {
+            strength: 8,
+            constitution: 10,
+            dexterity: 12,
+            wisdom: 8,
+            charisma: 8,
+            intelligence: 18
+          }
+        })
+        .choose('gameClass', 'Barbarian');
+      expect(character.ac()).to.eq(13);
+    });
+  });
 });
 
 describe('combineModifiers', () => {

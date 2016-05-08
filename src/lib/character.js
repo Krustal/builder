@@ -67,12 +67,17 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
   return remainingModifiers;
 }
 
+export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
+
 export default class Character {
   constructor(other = {}, diff = {}) {
     this.name = fallbacks(diff.name, other.name, '');
     this.race = fallbacks(diff.race, other.race, '');
     this.level = +fallbacks(diff.level, other.level, 1);
     this.gameClass = fallbacks(diff.gameClass, other.gameClass, null);
+    this.baseAC = fallbacks(diff.baseAC, other.baseAC, null);
+    this.basePD = fallbacks(diff.basePD, other.basePD, null);
+    this.baseMD = fallbacks(diff.baseMD, other.baseMD, null);
     this.modifiers = {};
     abilities.forEach((ability) => {
       let diffAbility = diff.abilities ? diff.abilities[ability] : null;
@@ -168,6 +173,30 @@ export default class Character {
     }, this[`_${name}`]);
   }
 
+  ac() {
+    if (this.baseAC) {
+      return this.baseAC + middleMod(this.constitutionMod, this.dexterityMod, this.wisdomMod) + this.level;
+    } else {
+      return null;
+    }
+  }
+
+  pd() {
+    if (this.basePD) {
+      return this.basePD + middleMod(this.strengthMod, this.constitutionMod, this.dexterityMod) + this.level;
+    } else {
+      return null;
+    }
+  }
+
+  md() {
+    if (this.baseMD) {
+      return this.baseMD + middleMod(this.intelligenceMod, this.wisdomMod, this.charismaMod) + this.level;
+    } else {
+      return null;
+    }
+  }
+
   // TODO: I'd live to meta-program this whole thing but features like Proxy
   // currently don't have the support to make that viable.
   get strength() {
@@ -231,6 +260,10 @@ export default class Character {
   }
 
   static create(other, diff) {
+    if(!diff) {
+      diff = other;
+      other = {};
+    }
     return new Character(other, diff);
   }
 }

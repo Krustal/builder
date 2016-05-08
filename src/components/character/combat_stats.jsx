@@ -1,41 +1,42 @@
 import React from 'react';
 import DefenseStat from './defense_stat.jsx';
-import StatField from './stat_field.jsx';
 import TextInput from '../form/text_input.jsx';
 import RatioInput from '../form/ratio_input.jsx';
 import DiceInput from '../form/dice_input.jsx';
+import ACField from './fields/ac.jsx';
+import PDField from './fields/pd.jsx';
+import MDField from './fields/md.jsx';
 
-import CombatStatsStyle from '../../styles/components/combat_stats.scss';
+import CombatStatsStyle from '../../styles/components/combat_stats.css';
 import HeaderStyle from '../../styles/headers.scss';
+import StatFieldStyles from '../../styles/components/combat_stat.css';
 
-export default class CombatStats extends React.Component {
-  render() {
-    return (
-      <div className={CombatStatsStyle.combatStats}>
-        <DefenseStat label="AC" value={this.props.armorClass}>Armor Class</DefenseStat>
-        <DefenseStat label="PD" value={this.props.physicalDefense}>Physical Defense</DefenseStat>
-        <DefenseStat label="MD" value={this.props.mentalDefense}>Mental Defense</DefenseStat>
-        <StatField>
-          <h3 className={HeaderStyle.h3Minor}>
-          Save <br /> Bonuses
-          </h3>
-          <TextInput length={2} />
-        </StatField>
-        <StatField>
-          <h3 className={HeaderStyle.h3Major}>
-            Hit Points
-          </h3>
-          <RatioInput numerator="current" denominator="maximum" />
-        </StatField>
-        <StatField>
-          <h3 className={HeaderStyle.h3Major}>Recoveries</h3>
-          <RatioInput numerator="current" denominator="maximum" />
-        </StatField>
-        <StatField>
-          <h3 className={HeaderStyle.h3}>Recovery <br /> Roll</h3>
-          <DiceInput />
-        </StatField>
-      </div>
-    );
-  }
-}
+ const CombatStats = () => (
+  <div className={CombatStatsStyle.combatStats}>
+    <ACField>Armor Class</ACField>
+    <PDField>Physical Defense</PDField>
+    <MDField>Mental Defense</MDField>
+    <div className={StatFieldStyles.basic}>
+      <h3 className={HeaderStyle.h3}>
+        Save Bonuses
+      </h3>
+      <TextInput length={2} />
+    </div>
+    <div className={StatFieldStyles.basic}>
+      <h3 className={HeaderStyle.h3}>
+        Hit Points
+      </h3>
+      <RatioInput numerator="current" denominator="maximum" />
+    </div>
+    <div className={StatFieldStyles.basic}>
+      <h3 className={HeaderStyle.h3}>Recoveries</h3>
+      <RatioInput numerator="current" denominator="maximum" />
+    </div>
+    <div className={StatFieldStyles.basic}>
+      <h3 className={HeaderStyle.h3}>Recovery Roll</h3>
+      <DiceInput />
+    </div>
+  </div>
+);
+
+export default CombatStats;

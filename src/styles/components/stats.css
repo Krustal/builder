@@ -1,0 +1,3 @@
+.stats {
+  composes: flex alignItemsBase wrap from "../flex.css";
+}

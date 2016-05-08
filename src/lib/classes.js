@@ -1,10 +1,22 @@
-const Barbarian = [
-  { field: 'gameClass', set: 'barbarian', unset: ''},
-];
+const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice }={}) => {
+  return [
+    { field: 'gameClass', set: name, unset: ''},
+    // TODO: This is actually a choice based on the armor weight, so this should
+    // be the smartest choice, most classes have a pretty clear best option.
+    { field: 'baseAC', set: ac, unset: null },
+    { field: 'basePD', set: pd, unset: null },
+    { field: 'baseMD', set: md, unset: null },
+    { field: 'baseHP', set: hp, unset: null },
+    // TODO: hp requires a level based multiplier, so a choice needs to have branches based on conditions
+    { field: 'recoveries', set: recoveries, unset: null },
+    { field: 'recoveryDice', set: recoveryDice, unset: null }
+    // TODO: Add talent choices, based on level
+    // TODO: Add feat choices, based on level
+  ];
+};
 
-const Fighter = [
-  { field: 'gameClass', set: 'fighter', unset: ''}
-];
+const Barbarian = createClassOption('barbarian', { ac: 12, pd: 11, md: 10, hp: 7, recoveries: 8, recoveryDice: 'd10' });
+const Fighter = createClassOption('fighter', { ac: 15, pd: 10, md: 10, hp: 8, recoveries: 9, recoveryDice: '1d10' });
 
 const ClassChoice = {
   name: 'gameClass',
