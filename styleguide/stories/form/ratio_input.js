@@ -7,5 +7,11 @@ storiesOf('Ratio Input', module)
     <RatioInput />
   ))
   .add('with labels', () => (
-    <RatioInput numerator="current" denominator="max" />
+    <RatioInput
+      numeratorLabel="current"
+      numerator={5}
+      numeratorChange={action('numerator change')}
+      denominatorLabel="max"
+      denominator={10}
+    />
   ));

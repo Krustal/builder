@@ -1,21 +1,26 @@
 import React from 'react';
-import InputStyle from '../../styles/input.scss';
+import RatioStyle from '../../styles/ratio_input.css';
 
-export default class RatioInput extends React.Component {
-  render() {
-    return (
-      <div className={InputStyle.ratioInput}>
-        <div className="numerator">
-          <label>{this.props.numerator}</label>
-          <br />
-          <input className={InputStyle.simpleText} ype="text" />
-        </div>
-        <div className="denominator">
-          <input className={InputStyle.simpleText} type="text" />
-          <br />
-          <label>{this.props.denominator}</label>
-        </div>
-      </div>
-    );
+const RatioInput = (
+  {
+    numeratorLabel,
+    numerator,
+    numeratorChange,
+    denominatorLabel,
+    denominator
   }
-}
+) => (
+  <div className={RatioStyle.container}>
+    <div className={RatioStyle.numerator}>
+      <label className={RatioStyle.labelNumerator}>{numeratorLabel}</label>
+      <br />
+      <input className={RatioStyle.input} value={numerator} onChange={numeratorChange} type="text" />
+    </div>
+    <div className={RatioStyle.denominator}>
+      <input className={RatioStyle.denominatorInput} value={denominator} type="text" />
+      <br />
+      <label className={RatioStyle.labelDenominator}>{denominatorLabel}</label>
+    </div>
+  </div>
+);
+export default RatioInput;

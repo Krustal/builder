@@ -1,0 +1,60 @@
+.container {
+  display: inline-block;
+  border: solid black 2px;
+}
+
+.ratioPart {
+  display: inline-block;
+}
+
+.numerator {
+  position: relative;
+  composes: ratioPart;
+}
+
+.numerator::after {
+  content: "";
+  width: 10px;
+  height: 115%;
+  border-right: solid #ccc 2px;
+  position: absolute;
+  right: 0;
+  top: -6px;
+  transform: rotateZ(30deg);
+}
+
+.denominator {
+  composes: ratioPart;
+  text-align: right;
+}
+
+.label {
+  margin: 4px;
+  font-size: .7em;
+}
+
+.labelNumerator {
+  composes: label;
+  vertical-align: top;
+}
+
+.labelDenominator {
+  composes: label;
+  vertical-align: bottom;
+}
+
+.input {
+  width: 50px;
+  font-size: 1.5em;
+  border: none;
+}
+
+.input:active, .input:focus {
+  border: none;
+  outline: none;
+}
+
+.denominatorInput {
+  composes: input;
+  text-align: right;
+}

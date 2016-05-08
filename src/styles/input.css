@@ -18,52 +18,6 @@
   outline: none;
 }
 
-.ratioInput {
-  display: inline-block;
-  border: solid black 2px;
-  text-align: left;
-
-  label {
-    margin: 4px;
-    font-size: .5em;
-  }
-
-  input {
-    width: 50px;
-    font-size: 1.5em;
-  }
-
-  :global(.numerator) {
-    text-align: left;
-    vertical-align: top;
-    position: relative;
-
-    label {
-      vertical-align: top;
-    }
-
-    &::after {
-      content: "";
-      width: 10px;
-      height: 115%;
-      border-right: solid #ccc 2px;
-      position: absolute;
-      right: 0;
-      top: -6px;
-      transform: rotateZ(30deg);
-    }
-  }
-
-  :global(.denominator) {
-    text-align: right;
-    vertical-align: bottom;
-  }
-
-  > div {
-    display: inline-block;
-  }
-}
-
 .diceInputOperator {
   vertical-align: super;
 }

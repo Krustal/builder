@@ -26,11 +26,11 @@ import StatFieldStyles from '../../styles/components/combat_stat.css';
       <h3 className={HeaderStyle.h3}>
         Hit Points
       </h3>
-      <RatioInput numerator="current" denominator="maximum" />
+      <RatioInput numeratorLabel="current" denominatorLabel="maximum" />
     </div>
     <div className={StatFieldStyles.basic}>
       <h3 className={HeaderStyle.h3}>Recoveries</h3>
-      <RatioInput numerator="current" denominator="maximum" />
+      <RatioInput numeratorLabel="current" denominatorLabel="maximum" />
     </div>
     <div className={StatFieldStyles.basic}>
       <h3 className={HeaderStyle.h3}>Recovery Roll</h3>

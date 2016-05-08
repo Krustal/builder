@@ -1,6 +1,6 @@
 import React from 'react';
 import TextInput from './text_input.jsx';
-import InputStyle from '../../styles/input.scss';
+import InputStyle from '../../styles/input.css';
 
 export default class DiceInput extends React.Component {
   render() {

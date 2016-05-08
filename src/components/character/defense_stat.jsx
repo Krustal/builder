@@ -1,5 +1,5 @@
 import React from 'react';
-import InputStyle from '../../styles/input.scss';
+import InputStyle from '../../styles/input.css';
 import CombatStatStyle from '../../styles/components/combat_stat.css';
 import HeaderStyle from '../../styles/headers.scss';
 

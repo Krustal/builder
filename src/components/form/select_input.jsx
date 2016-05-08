@@ -1,5 +1,5 @@
 import React from 'react';
-import InputStyle from 'styles/input.scss';
+import InputStyle from 'styles/input.css';
 import ComponentStyle from 'styles/components.css';
 
 export default class SelectInput extends React.Component {
