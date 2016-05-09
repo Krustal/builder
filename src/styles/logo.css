@@ -1,7 +1,7 @@
 @value mobile from "./breakpoints.css";
 
 .main {
-  dislay: none;
+  display: none;
 }
 @media mobile {
   .main {
