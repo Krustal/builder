@@ -24,10 +24,12 @@ describe('Character', () => {
       expect((new Character())._charisma).to.eq(8);
     });
     it('has a blank default name', () => {
-      expect((new Character()).name).to.eq('');
+      let character = new Character();
+      expect(character.name).to.eq('');
     });
     it('has a default level of 1', () => {
-      expect((new Character()).level).to.eq(1);
+      let character = new Character();
+      expect(character.level).to.eq(1);
     });
     it('has a blank class by default', () => {
       expect((new Character()).gameClass).to.eq(null);
@@ -49,8 +51,8 @@ describe('Character', () => {
 
       it('for properties with possible modifiers the updated field is the base', () => {
         let initialCharacter = Character.create();
-        let otherCharacter = Character.create(initialCharacter, { abilities: { strength: 12 } });
-        expect(otherCharacter.strength).to.eq(12);
+        let otherCharacter = Character.create(initialCharacter, { strength: 12 });
+        expect(otherCharacter._strength).to.eq(12);
       });
     });
   });
@@ -112,6 +114,19 @@ describe('Character', () => {
         Character.create().choose('bogus', 'blarg');
       }).to.throw(Error);
     });
+
+    context('when the choice is based on a condition', () => {
+      it('only the consequence that meets the condition is applied', () => {
+        let character = Character.create().choose('gameClass', 'Barbarian');
+        expect(character.hpLevelMod).to.eq(3);
+      });
+
+      it('updates the consequence with the conditional changes', () => {
+        let character = Character.create().choose('gameClass', 'Barbarian');
+        let otherCharacter = Character.create(character, { level: 2 });
+        expect(otherCharacter.hpLevelMod).to.eq(4);
+      });
+    });
   });
 
   describe('#unmakeChoice', () => {
@@ -165,14 +180,12 @@ describe('Character', () => {
     it('is computed from baseAC, middleMod, and level', () => {
       let character = Character
         .create({
-          abilities: {
-            strength: 8,
-            constitution: 10,
-            dexterity: 12,
-            wisdom: 8,
-            charisma: 8,
-            intelligence: 18
-          }
+          strength: 8,
+          constitution: 10,
+          dexterity: 12,
+          wisdom: 8,
+          charisma: 8,
+          intelligence: 18
         })
         .choose('gameClass', 'Barbarian');
       expect(character.ac()).to.eq(13);

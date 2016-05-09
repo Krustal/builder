@@ -1,4 +1,4 @@
-const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice }={}) => {
+const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice, hpLevelMod }={}) => {
   return [
     { field: 'gameClass', set: name, unset: ''},
     // TODO: This is actually a choice based on the armor weight, so this should
@@ -7,7 +7,7 @@ const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice }={})
     { field: 'basePD', set: pd, unset: null },
     { field: 'baseMD', set: md, unset: null },
     { field: 'baseHP', set: hp, unset: null },
-    // TODO: hp requires a level based multiplier, so a choice needs to have branches based on conditions
+    { field: 'hpLevelMod', set: (c) => hpLevelMod[c.level - 1] },
     { field: 'recoveries', set: recoveries, unset: null },
     { field: 'recoveryDice', set: recoveryDice, unset: null }
     // TODO: Add talent choices, based on level
@@ -15,8 +15,30 @@ const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice }={})
   ];
 };
 
-const Barbarian = createClassOption('barbarian', { ac: 12, pd: 11, md: 10, hp: 7, recoveries: 8, recoveryDice: 'd10' });
-const Fighter = createClassOption('fighter', { ac: 15, pd: 10, md: 10, hp: 8, recoveries: 9, recoveryDice: '1d10' });
+const Barbarian = createClassOption(
+  'barbarian',
+  {
+    ac: 12,
+    pd: 11,
+    md: 10,
+    hp: 7,
+    recoveries: 8,
+    recoveryDice: 'd10',
+    hpLevelMod: [3,4,5,6,8,10,12,16,20,24]
+  }
+);
+const Fighter = createClassOption(
+  'fighter',
+  {
+    ac: 15,
+    pd: 10,
+    md: 10,
+    hp: 8,
+    recoveries: 9,
+    recoveryDice: '1d10',
+    hpLevelMod: [3,4,5,6,8,10,12,16,20,24]
+   }
+ );
 
 const ClassChoice = {
   name: 'gameClass',

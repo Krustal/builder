@@ -12,7 +12,7 @@ export default (state = Character.create(), action = {}) => {
     case 'LEVEL_CHANGE':
       return Character.create(state, { level: action.level });
     case 'CHARACTER_ABILITY_CHANGE':
-      let change = { abilities: { [action.ability]: action.value } };
+      let change = { [action.ability]: action.value };
       return Character.create(state, change);
     case 'CHARACTER_HP_CHANGE':
       return Character.create(state, { currentHP: action.hp });
