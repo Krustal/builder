@@ -21,7 +21,6 @@ export default class CharacterSheet extends React.Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      console.log('force update');
       this.forceUpdate();
     });
   }
@@ -33,7 +32,6 @@ export default class CharacterSheet extends React.Component {
   render() {
     let state = this.props.store.getState();
     let overlayStatus = '';
-    console.log('dead?', state.character.isDead());
     if(state.character.isDead()) {
       overlayStatus = (<DeadStatus />);
     } else {

@@ -34,8 +34,8 @@ module.exports = {
     ],
     loaders: [
       { test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel' },
-      { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&importLoaders=1*localIdentName=[name]__[local]___[hash:base64:5]")},
-      { test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]", "sass-loader") }
+      { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", ["css-loader?modules&importLoaders=1*localIdentName=[name]__[local]___[hash:base64:5]"])},
+      { test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", ["css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]", "sass-loader"]) }
     ]
   },
   plugins: [
