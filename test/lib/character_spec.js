@@ -127,6 +127,17 @@ describe('Character', () => {
         expect(otherCharacter.hpLevelMod).to.eq(4);
       });
     });
+
+    context('when the consequence for a choice is additional choices', () => {
+      it('adds that choice to the resulting character', () => {
+        let character = Character.create().choose('race', 'Human');
+        expect(character.choices.map(c => c.name)).to.include('+2 to which ability');
+      });
+      it('that choice can be chosen like normal', () => {
+        let character = Character.create().choose('race', 'Human').choose('+2 to which ability', 'Strength');
+        expect(character.strength).to.eq(10);
+      });
+    });
   });
 
   describe('#unmakeChoice', () => {
@@ -154,6 +165,14 @@ describe('Character', () => {
               .race
             ).to.eq('');
         });
+      });
+    });
+
+    context('when the choice had nested choices', () => {
+      it('the nested choices are reverted too', () => {
+        let character = Character.create().choose('race', 'Human').choose('+2 to which ability', 'Strength');
+        let newCharacter = character.unmakeChoice('race');
+        expect(newCharacter.strength).to.eq(8);
       });
     });
 

@@ -70,6 +70,7 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
 
 const properties = {
+  'choices': [RaceChoice, ClassChoice, strengthOrDexterity, wisdomOrIntelligence],
   'name': '',
   'level': 1,
   'gameClass': null,
@@ -87,6 +88,13 @@ const properties = {
   'hpLevelMod': null,
   'currentHP': (c) => c.hp()
 };
+
+const createDiffFromUnsetters = (setters, oldDiff) => (
+  setters.reduce((diff, consequence) => {
+    diff[consequence.field] = consequence.unset;
+    return diff;
+  }, oldDiff)
+);
 
 function Character(other = {}, diff = {}) {
   this.setterModifiers = fallbacks(other.setterModifiers, {});
@@ -109,12 +117,6 @@ function Character(other = {}, diff = {}) {
 
   this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
 
-  this.choices = [
-    RaceChoice, ClassChoice,
-    // Test choices, remove once there are real choices
-    strengthOrDexterity, wisdomOrIntelligence
-  ];
-
   if (diff.chosenChoices) {
     let oldChoices = other.chosenChoices || {};
     let diffChoices = diff.chosenChoices || {};
@@ -131,13 +133,17 @@ Character.prototype = {
       return mod(property);
     }, this[`_${name}`]);
   },
+  _getChoice(name) {
+    let choice = this.choices.find((choice) => { return choice.name == name; });
+    if (!choice) {
+      throw Error(`No choice by name ${name}`);
+    }
+    return choice;
+  },
   choose(choiceName, optionName) {
     let character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
 
-    let choice = character.choices.find((choice) => { return choice.name === choiceName; });
-    if (!choice) {
-      throw Error(`No choice by name ${choiceName}`);
-    }
+    let choice = character._getChoice(choiceName);
 
     let consequences = choice.options[optionName];
     if (!consequences) {
@@ -147,9 +153,7 @@ Character.prototype = {
     let diff = { chosenChoices: { [choiceName]: optionName } };
 
     let consequenceModifiers = consequences.filter( c => (c.modifier));
-    if (consequenceModifiers.length > 0) {
-      diff.modifiers = combineModifiers(character.modifiers, consequenceModifiers);
-    }
+    diff.modifiers = combineModifiers(character.modifiers, consequenceModifiers);
 
     let consequenceSetters = consequences.filter( c => (c.set));
     if (consequenceSetters.length > 0) {
@@ -159,13 +163,15 @@ Character.prototype = {
       }, diff);
     }
 
+    let newChoicesConsequence = consequences.find(c => (c.addChoices));
+    if (newChoicesConsequence) {
+      diff.choices = character.choices.concat(newChoicesConsequence.addChoices);
+    }
+
     return Character.create(character, diff);
   },
   unmakeChoice(choiceName) {
-    let choice = this.choices.find((choice) => { return choice.name == choiceName; });
-    if (!choice) {
-      throw Error(`No choice by name ${choiceName}`);
-    }
+    let choice = this._getChoice(choiceName);
     let chosenOptionName = this.chosenChoices[choiceName];
 
     // If no option is found then there aren't consequences to revert
@@ -175,19 +181,19 @@ Character.prototype = {
     let diff = { chosenChoices: { [choiceName]: null } };
 
     let consequenceModifiers = consequences.filter( c => (c.modifier));
-    if (consequenceModifiers.length > 0) {
-      diff.modifiers = removeModifiers(this.modifiers, consequences);
-    }
+    diff.modifiers = removeModifiers(this.modifiers, consequenceModifiers);
 
     let consequenceSetters = consequences.filter( c => (c.set));
-    if (consequenceSetters.length > 0) {
-      diff = consequenceSetters.reduce((diff, consequence) => {
-        diff[consequence.field] = consequence.unset;
-        return diff;
-      }, diff);
-    }
+    diff = createDiffFromUnsetters(consequenceSetters, diff);
 
-    return Character.create(this, diff);
+    let newChoicesConsequence = consequences.find(c => (c.addChoices));
+    if (newChoicesConsequence) {
+      return newChoicesConsequence.addChoices.map(c => c.name).reduce((char, choice) => {
+        return char.unmakeChoice(choice);
+      }, Character.create(this, diff));
+    } else {
+      return Character.create(this, diff);
+    }
   },
   optionsFor(name) {
     let choice = this.choices.find((choice) => (choice.name === name));

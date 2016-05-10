@@ -1,5 +1,8 @@
+import { BonusToWhichAbility } from './ability_bonuses.js';
+
 const Human = [
-  { field: 'race', set: 'Human', unset: ''}
+  { field: 'race', set: 'Human', unset: ''},
+  { addChoices: [BonusToWhichAbility] }
 ];
 
 const HighElf = [

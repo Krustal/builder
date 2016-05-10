@@ -1,0 +1,9 @@
+{
+  "extends": "../.jshintrc",
+  "globals": {
+    "it": true,
+    "describe": true,
+    "context": true,
+    "expect": true
+  }
+}
