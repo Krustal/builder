@@ -1,6 +1,5 @@
-import React from 'react';
-import ReactDom from 'react-dom';
-import CharacterSheet from './components/character_sheet.jsx';
-import createStore from './store/create_store.js';
-
-ReactDom.render(<CharacterSheet store={createStore()} />, document.getElementById('main'));
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./main.prod.js');
+} else {
+  module.exports = require('./main.dev.js');
+}

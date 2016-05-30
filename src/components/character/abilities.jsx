@@ -1,20 +1,12 @@
 import React from 'react';
 import CharacterAbilityStyles from '../../styles/components/character_abilities.scss';
+import { connect } from 'react-redux';
 
 var abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
 
-export default class CharacterAbilities extends React.Component {
-  componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
+class CharacterAbilities extends React.Component {
   render() {
-    const { store } = this.props;
-    const state = store.getState();
+    const { character, abilityChange } = this.props;
     var abilityScores = abilities.map((ability) => {
       return (
         <td key={ability + 'score'}>
@@ -23,24 +15,30 @@ export default class CharacterAbilities extends React.Component {
             type="text"
             min={0}
             max={40}
-            value={state.character[ability]}
-            onChange={(evt) => (
-              store.dispatch({ type: 'CHARACTER_ABILITY_CHANGE', ability, value: evt.target.value })
-            )} />
+            value={character[ability]}
+            onChange={(evt) => abilityChange(ability, evt.target.value)} />
         </td>
       );
     });
     var abilityModifiers = abilities.map((ability) => {
       return (
         <td key={ability + 'mod'}>
-          <input className="ability" type="text" value={state.character[`${ability}Mod`]} disabled={true} />
+          <input
+            className="ability"
+            type="text"
+            value={character[`${ability}Mod`]}
+            disabled={true} />
         </td>
       );
     });
     var abilityModifiersPlusLevel = abilities.map((ability) => {
       return (
         <td key={ability + 'modlevel'}>
-          <input className="ability" type="text" value={state.character[`${ability}ModPlusLevel`]} disabled={true} />
+          <input
+            className="ability"
+            type="text"
+            value={character[`${ability}ModPlusLevel`]}
+            disabled={true} />
         </td>
       );
     });
@@ -90,3 +88,19 @@ export default class CharacterAbilities extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    character: state.character
+  };
+};
+
+const mapDispatchToProps = (dispatch) => (
+  {
+    abilityChange: (ability, value) => {
+      dispatch({ type: 'CHARACTER_ABILITY_CHANGE', ability, value });
+    }
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CharacterAbilities);

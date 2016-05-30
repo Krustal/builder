@@ -5,6 +5,7 @@
     "describe": false,
     "require": false,
     "module": false,
+    "process": false,
     "__dirname": false
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Barbarian from '../constants/classes/barbarian.js';
 import logo from '../styles/logo.css';
 import typography from '../styles/theme/typography.scss';
@@ -7,50 +8,34 @@ import CharacterOverview from './character/overview.jsx';
 import Stats from './character/stats.jsx';
 import DeadStatus from './character/dead_status.jsx';
 
-/* TODO: DON'T MERGE THIS, IT WILL ADD REDUX DEVTOOLS TO PROD */
-import DevTools from './dev_tools.jsx';
-
 var classes = {
   barbarian: Barbarian
 };
 
-export default class CharacterSheet extends React.Component {
-  getChildContext() {
-    return {
-      store: this.props.store
-    };
-  }
-
-  componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
+class CharacterSheet extends React.Component {
   render() {
-    let state = this.props.store.getState();
+    let { isDead } = this.props;
     let overlayStatus = '';
-    if(state.character.isDead()) {
+    if(isDead) {
       overlayStatus = (<DeadStatus />);
     } else {
       overlayStatus = "";
     }
     return (
-      <form action>
+      <form>
         <div className={logo.main} />
-        <CharacterOverview store={this.props.store} />
-        <Stats store={this.props.store} />
+        <CharacterOverview />
+        <Stats />
         {overlayStatus}
-        <DevTools />
       </form>
     );
   }
 }
-CharacterSheet.childContextTypes = {
-  store: React.PropTypes.object
-};
+
+const mapStateToProps = (state) => (
+  {
+    isDead: state.character.isDead()
+  }
+);
+
+export default connect(mapStateToProps)(CharacterSheet);
