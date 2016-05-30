@@ -1,7 +1,8 @@
+@value primary from '../theme/colors.css';
 @value primaryFont from '../theme/typography.scss';
-@value primary as primaryColor from '../theme/colors.scss';
-@value secondary as secondaryColor from '../theme/colors.scss';
-@value tertiary as tertiaryColor from '../theme/colors.scss';
+@value primary as primaryColor from '../theme/colors.css';
+@value secondary as secondaryColor from '../theme/colors.css';
+@value tertiary as tertiaryColor from '../theme/colors.css';
 @value base as baseSpacing from '../spacing.css';
 
 .characterAbilities {

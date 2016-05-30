@@ -1,6 +1,6 @@
 @value base as baseSpacing from './spacing.css';
-@value primary as primaryColor from './theme/colors.scss';
-@value secondary as secondaryColor from './theme/colors.scss';
+@value primary as primaryColor from './theme/colors.css';
+@value secondary as secondaryColor from './theme/colors.css';
 
 .base {
   border: none;
