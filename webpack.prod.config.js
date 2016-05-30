@@ -35,8 +35,11 @@ module.exports = {
     loaders: [
       { test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel' },
       { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", ["css-loader?modules&importLoaders=1*localIdentName=[name]__[local]___[hash:base64:5]"])},
-      { test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", ["css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]", "sass-loader"]) }
+      { test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", ["css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]", "postcss", "sass-loader"]) }
     ]
+  },
+  postcss: function() {
+    return [require('postcss-modules-values')];
   },
   plugins: [
     // Run build in node's production environment to strip out test helpers from
