@@ -1,16 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Barbarian from '../constants/classes/barbarian.js';
-import logo from '../styles/logo.css';
-import typography from '../styles/theme/typography.scss';
+import logoStyles from '../styles/logo.css';
+import characterSheetStyles from '../styles/components/character_sheet.scss';
 
 import CharacterOverview from './character/overview.jsx';
 import Stats from './character/stats.jsx';
 import DeadStatus from './character/dead_status.jsx';
-
-var classes = {
-  barbarian: Barbarian
-};
 
 class CharacterSheet extends React.Component {
   render() {
@@ -22,8 +18,8 @@ class CharacterSheet extends React.Component {
       overlayStatus = "";
     }
     return (
-      <form>
-        <div className={logo.main} />
+      <form className={characterSheetStyles.default}>
+        <div className="logo" />
         <CharacterOverview />
         <Stats />
         {overlayStatus}

@@ -1,0 +1,23 @@
+@value mobile from "../breakpoints.css";
+@value main as mainLogo from "../logo.css";
+
+.default {
+  max-width: 1250px;
+
+  :global {
+    .logo {
+      display: none;
+    }
+    @media mobile {
+      .logo {
+        display: block;
+        height: 200px;
+        width: 200px;
+        background-size: 100%;
+        background-image: mainLogo;
+        float: left;
+        margin-right: 10px;
+      }
+    }
+  }
+}
