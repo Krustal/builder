@@ -7,6 +7,9 @@ import CharacterOverview from './character/overview.jsx';
 import Stats from './character/stats.jsx';
 import DeadStatus from './character/dead_status.jsx';
 
+/* TODO: DON'T MERGE THIS, IT WILL ADD REDUX DEVTOOLS TO PROD */
+import DevTools from './dev_tools.jsx';
+
 var classes = {
   barbarian: Barbarian
 };
@@ -43,6 +46,7 @@ export default class CharacterSheet extends React.Component {
         <CharacterOverview store={this.props.store} />
         <Stats store={this.props.store} />
         {overlayStatus}
+        <DevTools />
       </form>
     );
   }
