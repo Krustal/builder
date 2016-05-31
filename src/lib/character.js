@@ -170,15 +170,19 @@ Character.prototype = {
 
     return Character.create(character, diff);
   },
-  unmakeChoice(choiceName) {
+  unmakeChoice(choiceName, options = {}) {
     let choice = this._getChoice(choiceName);
     let chosenOptionName = this.chosenChoices[choiceName];
 
     // If no option is found then there aren't consequences to revert
-    let consequences = choice.options[chosenOptionName];
-    if(!consequences) { return this; }
+    let consequences = choice.options[chosenOptionName] || [];
 
     let diff = { chosenChoices: { [choiceName]: null } };
+    if (options.remove) {
+      diff.choices = this.choices.filter((choice) => {
+        return choice.name !== choiceName;
+      });
+    }
 
     let consequenceModifiers = consequences.filter( c => (c.modifier));
     diff.modifiers = removeModifiers(this.modifiers, consequenceModifiers);
@@ -188,8 +192,9 @@ Character.prototype = {
 
     let newChoicesConsequence = consequences.find(c => (c.addChoices));
     if (newChoicesConsequence) {
-      return newChoicesConsequence.addChoices.map(c => c.name).reduce((char, choice) => {
-        return char.unmakeChoice(choice);
+      let nestedChoices = newChoicesConsequence.addChoices.map(c => c.name);
+      return nestedChoices.reduce((character, choice) => {
+        return character.unmakeChoice(choice, { remove: true });
       }, Character.create(this, diff));
     } else {
       return Character.create(this, diff);
@@ -197,7 +202,7 @@ Character.prototype = {
   },
   optionsFor(name) {
     let choice = this.choices.find((choice) => (choice.name === name));
-    return Object.keys(choice.options);
+    return choice ? Object.keys(choice.options) : [];
   },
   ac() {
     if (this.baseAC) {

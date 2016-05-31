@@ -131,10 +131,10 @@ describe('Character', () => {
     context('when the consequence for a choice is additional choices', () => {
       it('adds that choice to the resulting character', () => {
         let character = Character.create().choose('race', 'Human');
-        expect(character.choices.map(c => c.name)).to.include('+2 to which ability');
+        expect(character.choices.map(c => c.name)).to.include('+2 racial ability bonus');
       });
       it('that choice can be chosen like normal', () => {
-        let character = Character.create().choose('race', 'Human').choose('+2 to which ability', 'Strength');
+        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
         expect(character.strength).to.eq(10);
       });
     });
@@ -170,9 +170,16 @@ describe('Character', () => {
 
     context('when the choice had nested choices', () => {
       it('the nested choices are reverted too', () => {
-        let character = Character.create().choose('race', 'Human').choose('+2 to which ability', 'Strength');
+        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
         let newCharacter = character.unmakeChoice('race');
         expect(newCharacter.strength).to.eq(8);
+      });
+
+      it('removes the nested choices from the characters choices', () => {
+        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
+        let newCharacter = character.unmakeChoice('race');
+        expect(newCharacter._choices.find(choice => choice.name === '+2 racial ability bonus'))
+          .to.be.undefined;
       });
     });
 
@@ -187,6 +194,12 @@ describe('Character', () => {
     it('returns a list of the options on the given choice', () => {
       const character = Character.create();
       expect(character.optionsFor('race')).to.include('Human');
+    });
+    context('the choice name is invalid', () => {
+      it('returns an empty list', () => {
+        const character = Character.create();
+        expect(character.optionsFor('races')).to.deep.eq([]);
+      });
     });
   });
 

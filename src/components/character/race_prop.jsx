@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import SelectInput from '../form/select_input.jsx';
 
@@ -11,9 +12,13 @@ const mapStateToProps = (state) => {
   const raceOptions = state.character.optionsFor('race').map(option => (
     { label: raceOptionsMap[option], value: option }
   ));
-
+  const bonusOptions = state.character.optionsFor('+2 racial ability bonus').map(bonusOption => (
+    <span>{bonusOption}</span>
+  ));
 
   return {
+    label: "Race",
+    children: bonusOptions,
     value: state.character.chosenChoices.race,
     options: raceOptions || []
   };

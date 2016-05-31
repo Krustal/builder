@@ -8,8 +8,8 @@ import ClassProp from './class_prop.jsx';
 const CharacterOverview = ({ gameClass }) => (
   <div className={components.characterOverview}>
     <NameProp className={components.characterOverviewProp} variant="major">Name</NameProp>
-    <RaceProp className={components.characterOverviewProp} variant="major">Race</RaceProp>
-    <ClassProp className={components.characterOverviewProp} variant="major">Class</ClassProp>
+    <RaceProp className={components.characterOverviewProp} variant="major" label="Race" />
+    <ClassProp className={components.characterOverviewProp} variant="major" label="Class" />
     <LevelProp className={components.characterOverviewProp} variant="major">Level</LevelProp>
   </div>
 );
