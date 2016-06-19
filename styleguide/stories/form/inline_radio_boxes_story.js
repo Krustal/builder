@@ -13,5 +13,6 @@ const defaultProps = {
 
 storiesOf('Inline Radio Boxes', module)
   .add('default', () => (
-    <InlineRadioBoxes {...defaultProps}/>
+    <InlineRadioBoxes {...defaultProps}
+      selectionCB={action('selection')}/>
   ));

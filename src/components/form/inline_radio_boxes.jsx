@@ -27,13 +27,14 @@ class InlineRadioBoxes extends React.Component {
   render() {
     const { field, options } = this.props;
     return (
-      <div>
+      <div className={RadioBoxStyles.container}>
         {options.map((option) => (
           <RadioBox
             field={field}
             label={option.label}
             value={option.value}
             onClick={(value) => {
+              this.props.selectionCB(value);
               this.setState({ selectedOption: value });
             }}
             selected={option.value === this.state.selectedOption} />
