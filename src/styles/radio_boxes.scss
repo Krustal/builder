@@ -1,0 +1,26 @@
+@value secondary as secondaryColor, primary as primaryColor from './theme/colors.css';
+
+.base {
+  display: inline;
+  border: solid 1px primaryColor;
+  border-left: none;
+  padding: 5px;
+  background: secondaryColor;
+  cursor: pointer;
+  input {
+    display: none;
+  }
+  &:first-of-type {
+    border-left: solid 1px primaryColor;
+  }
+}
+
+.unselected {
+  composes: base;
+}
+
+.selected {
+  composes: base;
+  background: primaryColor;
+  color: secondaryColor;
+}
