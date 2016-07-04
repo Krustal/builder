@@ -29,10 +29,15 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
   const remainingModifiers = modifiersToRemove.reduce((modifiers, consequence) => {
     const propMods = modifiers[consequence.field];
     const consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
-    modifiers[consequence.field] = propMods
-      .slice(0, consequenceToRemoveIndex)
-      .concat(propMods.slice(consequenceToRemoveIndex + 1));
-    return modifiers;
+    return Object.assign(
+      {},
+      modifiers,
+      {
+        [consequence.field]: propMods
+          .slice(0, consequenceToRemoveIndex)
+          .concat(propMods.slice(consequenceToRemoveIndex + 1)),
+      }
+    );
   }, Object.assign({}, currentModifiers));
   return remainingModifiers;
 }
@@ -60,10 +65,9 @@ const properties = {
 };
 
 const createDiffFromUnsetters = (setters, oldDiff) => (
-  setters.reduce((diff, consequence) => {
-    diff[consequence.field] = consequence.unset;
-    return diff;
-  }, oldDiff)
+  setters.reduce((diff, consequence) => (
+    Object.assign({}, diff, { [consequence.field]: consequence.unset })
+  ), oldDiff)
 );
 
 function Character(other = {}, diff = {}) {
@@ -125,10 +129,9 @@ Character.prototype = {
 
     const consequenceSetters = consequences.filter(c => (c.set));
     if (consequenceSetters.length > 0) {
-      diff = consequenceSetters.reduce((diff, consequence) => {
-        diff[consequence.field] = consequence.set;
-        return diff;
-      }, diff);
+      diff = consequenceSetters.reduce((diffMemo, consequence) => (
+        Object.assign({}, diffMemo, { [consequence.field]: consequence.set })
+      ), diff);
     }
 
     const newChoicesConsequence = consequences.find(c => (c.addChoices));
@@ -159,12 +162,11 @@ Character.prototype = {
     const newChoicesConsequence = consequences.find(c => (c.addChoices));
     if (newChoicesConsequence) {
       const nestedChoices = newChoicesConsequence.addChoices.map(c => c.name);
-      return nestedChoices.reduce((character, choice) => {
-        return character.unmakeChoice(choice, { remove: true });
-      }, Character.create(this, diff));
-    } else {
-      return Character.create(this, diff);
+      return nestedChoices.reduce((character, revertedChoice) => (
+        character.unmakeChoice(revertedChoice, { remove: true })
+      ), Character.create(this, diff));
     }
+    return Character.create(this, diff);
   },
   optionsFor(name) {
     const choice = this.choices.find((c) => (c.name === name));
@@ -172,24 +174,27 @@ Character.prototype = {
   },
   ac() {
     if (this.baseAC) {
-      return this.baseAC + middleMod(this.constitutionMod, this.dexterityMod, this.wisdomMod) + this.level;
-    } else {
-      return null;
+      return this.baseAC +
+        middleMod(this.constitutionMod, this.dexterityMod, this.wisdomMod) +
+        this.level;
     }
+    return null;
   },
   pd() {
     if (this.basePD) {
-      return this.basePD + middleMod(this.strengthMod, this.constitutionMod, this.dexterityMod) + this.level;
-    } else {
-      return null;
+      return this.basePD +
+      middleMod(this.strengthMod, this.constitutionMod, this.dexterityMod) +
+      this.level;
     }
+    return null;
   },
   md() {
     if (this.baseMD) {
-      return this.baseMD + middleMod(this.intelligenceMod, this.wisdomMod, this.charismaMod) + this.level;
-    } else {
-      return null;
+      return this.baseMD +
+      middleMod(this.intelligenceMod, this.wisdomMod, this.charismaMod) +
+      this.level;
     }
+    return null;
   },
   hp() {
     if (this.baseHP && this.hpLevelMod) {
@@ -235,11 +240,16 @@ abilities.forEach(ability => {
 
 // TODO: Bigger improvements in order to not overload the params
 Character.create = function create(other, diff) {
+  let constructorDiff;
+  let constructorOther;
   if (!diff) {
-    diff = other;
-    other = {};
+    constructorDiff = other;
+    constructorOther = {};
+  } else {
+    constructorDiff = diff;
+    constructorOther = other;
   }
-  return new Character(other, diff);
+  return new Character(constructorOther, constructorDiff);
 };
 
 export default Character;
