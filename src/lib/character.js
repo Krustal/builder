@@ -8,21 +8,8 @@ export const abilities = [
   'constitution',
   'intelligence',
   'wisdom',
-  'charisma'
+  'charisma',
 ];
-
-const plusTwoStrConClass = {
-  name: '+2 strength or constitution from class',
-  options: {
-    strength: [{ field: 'strength', modifier: (str) => { return str + 2; } }],
-    constitution: [{ field: 'constitution', modifier: (con) => { return con + 2; } }]
-  },
-  restriction: {
-    strength: (obj) => {
-      return obj.choices['+2 strength or constitution from race'] !== 'strength';
-    }
-  }
-};
 
 // TODO: The following choices are all filler choices to enable testing of
 // functionality, once functionality is where it is needed they will be removed
@@ -31,34 +18,36 @@ const strengthOrDexterity = {
   name: '+2 strength or dex',
   options: {
     strength: [
-      { field: 'strength', modifier: (str) => { return str + 2; } },
-      { field: 'charisma', modifier: (wis) => { return wis - 5; } }
+      { field: 'strength', modifier: (str) => str + 2 },
+      { field: 'charisma', modifier: (wis) => wis - 5 },
     ],
-    dexterity: [{ field: 'dexterity', modifier: (dex) => {return dex + 2; } }]
-  }
+    dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+  },
 };
 
 const wisdomOrIntelligence = {
   name: '+2 wisdom or dex',
   options: {
-    wisdom: [{ field: 'wisdom', modifier: (str) => { return str + 4; } }],
-    dexterity: [{ field: 'dexterity', modifier: (dex) => {return dex + 4; } }]
-  }
+    wisdom: [{ field: 'wisdom', modifier: (str) => str + 4 }],
+    dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 4 }],
+  },
 };
 
 export function combineModifiers(currentModifiers, newModifiers) {
-  let combinedModifiers = newModifiers.reduce((modifiers, consequence) => {
-    modifiers[consequence.field] = [consequence.modifier, ...modifiers[consequence.field]];
-    return modifiers;
+  const combinedModifiers = newModifiers.reduce((modifiers, consequence) => {
+    return {
+      ...modifiers,
+      [consequence.field]: [consequence.modifier, ...modifiers[consequence.field]],
+    };
   }, Object.assign({}, currentModifiers));
 
   return combinedModifiers;
 }
 
 export function removeModifiers(currentModifiers, modifiersToRemove) {
-  let remainingModifiers = modifiersToRemove.reduce((modifiers, consequence) => {
-    let propMods = modifiers[consequence.field];
-    let consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
+  const remainingModifiers = modifiersToRemove.reduce((modifiers, consequence) => {
+    const propMods = modifiers[consequence.field];
+    const consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
     modifiers[consequence.field] = propMods
       .slice(0, consequenceToRemoveIndex)
       .concat(propMods.slice(consequenceToRemoveIndex + 1));
@@ -70,23 +59,23 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
 
 const properties = {
-  'choices': [RaceChoice, ClassChoice, strengthOrDexterity, wisdomOrIntelligence],
-  'name': '',
-  'level': 1,
-  'gameClass': null,
-  'race': null,
-  'strength': 8,
-  'dexterity': 8,
-  'constitution': 8,
-  'intelligence': 8,
-  'wisdom': 8,
-  'charisma': 8,
-  'baseAC': null,
-  'basePD': null,
-  'baseMD': null,
-  'baseHP': null,
-  'hpLevelMod': null,
-  'currentHP': (c) => c.hp()
+  choices: [RaceChoice, ClassChoice, strengthOrDexterity, wisdomOrIntelligence],
+  name: '',
+  level: 1,
+  gameClass: null,
+  race: null,
+  strength: 8,
+  dexterity: 8,
+  constitution: 8,
+  intelligence: 8,
+  wisdom: 8,
+  charisma: 8,
+  baseAC: null,
+  basePD: null,
+  baseMD: null,
+  baseHP: null,
+  hpLevelMod: null,
+  currentHP: (c) => c.hp(),
 };
 
 const createDiffFromUnsetters = (setters, oldDiff) => (
@@ -102,11 +91,11 @@ function Character(other = {}, diff = {}) {
 
   Object.keys(properties).forEach(prop => {
     let defaultValue = properties[prop];
-    if(typeof defaultValue === 'function') {
+    if (typeof defaultValue === 'function') {
       defaultValue = defaultValue.call(null, this);
     }
     let diffValue = this.setterModifiers[prop] || diff[prop];
-    if(typeof diffValue === 'function') {
+    if (typeof diffValue === 'function') {
       this.setterModifiers[prop] = diffValue;
       diffValue = diffValue.call(null, this);
     }
@@ -118,9 +107,9 @@ function Character(other = {}, diff = {}) {
   this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
 
   if (diff.chosenChoices) {
-    let oldChoices = other.chosenChoices || {};
-    let diffChoices = diff.chosenChoices || {};
-    let mergedChoices = Object.assign({}, oldChoices, diffChoices);
+    const oldChoices = other.chosenChoices || {};
+    const diffChoices = diff.chosenChoices || {};
+    const mergedChoices = Object.assign({}, oldChoices, diffChoices);
     this.chosenChoices = mergedChoices;
   } else {
     this.chosenChoices = other.chosenChoices || {};
@@ -129,33 +118,31 @@ function Character(other = {}, diff = {}) {
 
 Character.prototype = {
   _getModifiedProperty(name) {
-    return this.modifiers[name].reduce((property, mod) => {
-      return mod(property);
-    }, this[`_${name}`]);
+    return this.modifiers[name].reduce((property, mod) => mod(property), this[`_${name}`]);
   },
-  _getChoice(name) {
-    let choice = this.choices.find((choice) => { return choice.name == name; });
+  getChoice(name) {
+    const choice = this.choices.find((c) => (c.name === name));
     if (!choice) {
       throw Error(`No choice by name ${name}`);
     }
     return choice;
   },
   choose(choiceName, optionName) {
-    let character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
+    const character = this.chosenChoices[choiceName] ? this.unmakeChoice(choiceName) : this;
 
-    let choice = character._getChoice(choiceName);
+    const choice = character.getChoice(choiceName);
 
-    let consequences = choice.options[optionName];
+    const consequences = choice.options[optionName];
     if (!consequences) {
       throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
     }
 
     let diff = { chosenChoices: { [choiceName]: optionName } };
 
-    let consequenceModifiers = consequences.filter( c => (c.modifier));
+    const consequenceModifiers = consequences.filter(c => (c.modifier));
     diff.modifiers = combineModifiers(character.modifiers, consequenceModifiers);
 
-    let consequenceSetters = consequences.filter( c => (c.set));
+    const consequenceSetters = consequences.filter(c => (c.set));
     if (consequenceSetters.length > 0) {
       diff = consequenceSetters.reduce((diff, consequence) => {
         diff[consequence.field] = consequence.set;
@@ -163,7 +150,7 @@ Character.prototype = {
       }, diff);
     }
 
-    let newChoicesConsequence = consequences.find(c => (c.addChoices));
+    const newChoicesConsequence = consequences.find(c => (c.addChoices));
     if (newChoicesConsequence) {
       diff.choices = character.choices.concat(newChoicesConsequence.addChoices);
     }
@@ -171,28 +158,26 @@ Character.prototype = {
     return Character.create(character, diff);
   },
   unmakeChoice(choiceName, options = {}) {
-    let choice = this._getChoice(choiceName);
-    let chosenOptionName = this.chosenChoices[choiceName];
+    const choice = this.getChoice(choiceName);
+    const chosenOptionName = this.chosenChoices[choiceName];
 
     // If no option is found then there aren't consequences to revert
-    let consequences = choice.options[chosenOptionName] || [];
+    const consequences = choice.options[chosenOptionName] || [];
 
     let diff = { chosenChoices: { [choiceName]: null } };
     if (options.remove) {
-      diff.choices = this.choices.filter((choice) => {
-        return choice.name !== choiceName;
-      });
+      diff.choices = this.choices.filter((c) => c.name !== choiceName);
     }
 
-    let consequenceModifiers = consequences.filter( c => (c.modifier));
+    const consequenceModifiers = consequences.filter(c => (c.modifier));
     diff.modifiers = removeModifiers(this.modifiers, consequenceModifiers);
 
-    let consequenceSetters = consequences.filter( c => (c.set));
+    const consequenceSetters = consequences.filter(c => (c.set));
     diff = createDiffFromUnsetters(consequenceSetters, diff);
 
-    let newChoicesConsequence = consequences.find(c => (c.addChoices));
+    const newChoicesConsequence = consequences.find(c => (c.addChoices));
     if (newChoicesConsequence) {
-      let nestedChoices = newChoicesConsequence.addChoices.map(c => c.name);
+      const nestedChoices = newChoicesConsequence.addChoices.map(c => c.name);
       return nestedChoices.reduce((character, choice) => {
         return character.unmakeChoice(choice, { remove: true });
       }, Character.create(this, diff));
@@ -201,7 +186,7 @@ Character.prototype = {
     }
   },
   optionsFor(name) {
-    let choice = this.choices.find((choice) => (choice.name === name));
+    const choice = this.choices.find((c) => (c.name === name));
     return choice ? Object.keys(choice.options) : [];
   },
   ac() {
@@ -228,50 +213,48 @@ Character.prototype = {
   hp() {
     if (this.baseHP && this.hpLevelMod) {
       return (this.baseHP + this.constitutionMod) * this.hpLevelMod;
-    } else {
-      return null;
     }
+    return null;
   },
   isUnconscious() {
-    let currentHP = parseInt(this.currentHP, 10);
+    const currentHP = parseInt(this.currentHP, 10);
     if (!isNaN(this.hp()) && !isNaN(currentHP)) {
       return currentHP <= 0;
-    } else {
-      return false;
     }
+    return false;
   },
   isDead() {
-    let currentHP = parseInt(this.currentHP, 10);
+    const currentHP = parseInt(this.currentHP, 10);
     if (!isNaN(this.hp()) && !isNaN(currentHP)) {
       return currentHP <= -(this.hp() / 2);
-    } else {
-      return false;
     }
-  }
+    return false;
+  },
 };
 
 Object.keys(properties).forEach(prop => {
   Object.defineProperty(Character.prototype, prop, {
-    get: function() {
+    get() {
       return this._getModifiedProperty(prop);
-    }
+    },
   });
 });
 abilities.forEach(ability => {
   Object.defineProperty(Character.prototype, `${ability}Mod`, {
-    get: function() {
+    get() {
       return parseInt((this[ability] - 10) / 2, 10);
-    }
+    },
   });
   Object.defineProperty(Character.prototype, `${ability}ModPlusLevel`, {
-    get: function() {
+    get() {
       return this[`${ability}Mod`] + this.level;
-    }
+    },
   });
 });
 
-Character.create = function(other, diff) {
-  if(!diff) {
+// TODO: Bigger improvements in order to not overload the params
+Character.create = function create(other, diff) {
+  if (!diff) {
     diff = other;
     other = {};
   }
