@@ -1,7 +1,6 @@
 import Character from '../lib/character.js';
 
 export default (state = Character.create(), action = {}) => {
-  console.log(`[ACTION] ${action.type}:`, action);
   switch(action.type) {
     case 'NAME_CHANGE':
       return Character.create(state, { name: action.name });
@@ -11,6 +10,8 @@ export default (state = Character.create(), action = {}) => {
       return state.choose('gameClass', action.gameClass);
     case 'LEVEL_CHANGE':
       return Character.create(state, { level: action.level });
+    case 'CHARACTER_RACIAL_ABILITY_BONUS_CHANGE':
+      return state.choose('+2 racial ability bonus', action.ability);
     case 'CHARACTER_ABILITY_CHANGE':
       let change = { [action.ability]: action.value };
       return Character.create(state, change);
