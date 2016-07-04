@@ -23,14 +23,10 @@
         "es6": true,
         "browser": true
     },
-    "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
-    },
     "parserOptions": {
       "ecmaFeatures": {
         "jsx": true,
-        "experimentalObjectRestSpread": true
+        "experimentalObjectRestSpread": true,
       }
     },
     "plugins": [

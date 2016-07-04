@@ -11,35 +11,16 @@ export const abilities = [
   'charisma',
 ];
 
-// TODO: The following choices are all filler choices to enable testing of
-// functionality, once functionality is where it is needed they will be removed
-// and tests updated to reflect real choices.
-const strengthOrDexterity = {
-  name: '+2 strength or dex',
-  options: {
-    strength: [
-      { field: 'strength', modifier: (str) => str + 2 },
-      { field: 'charisma', modifier: (wis) => wis - 5 },
-    ],
-    dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
-  },
-};
-
-const wisdomOrIntelligence = {
-  name: '+2 wisdom or dex',
-  options: {
-    wisdom: [{ field: 'wisdom', modifier: (str) => str + 4 }],
-    dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 4 }],
-  },
-};
-
 export function combineModifiers(currentModifiers, newModifiers) {
-  const combinedModifiers = newModifiers.reduce((modifiers, consequence) => {
-    return {
-      ...modifiers,
-      [consequence.field]: [consequence.modifier, ...modifiers[consequence.field]],
-    };
-  }, Object.assign({}, currentModifiers));
+  const combinedModifiers = newModifiers.reduce((modifiers, consequence) => (
+    Object.assign(
+      {},
+      modifiers,
+      {
+        [consequence.field]: [consequence.modifier, ...modifiers[consequence.field]],
+      }
+    )
+  ), Object.assign({}, currentModifiers));
 
   return combinedModifiers;
 }
@@ -59,7 +40,7 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
 export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
 
 const properties = {
-  choices: [RaceChoice, ClassChoice, strengthOrDexterity, wisdomOrIntelligence],
+  choices: [RaceChoice, ClassChoice],
   name: '',
   level: 1,
   gameClass: null,

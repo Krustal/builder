@@ -58,29 +58,46 @@ describe('Character', () => {
   });
 
   describe('#choose', () => {
-    it('makes a choice and implements the consequences', () => {
-      expect(Character.create().choose('+2 strength or dex', 'strength').strength).to.eq(10);
-    });
-
     it('registers that choice and the chosen option', () => {
       expect(
         Character.create()
-          .choose('+2 strength or dex', 'strength')
-          .chosenChoices['+2 strength or dex']
-        ).to.eq('strength');
+          .choose('gameClass', 'Barbarian')
+          .chosenChoices.gameClass
+        ).to.eq('Barbarian');
     });
 
     it("doesn't override different choices", () => {
       let character = Character.create()
-        .choose('+2 strength or dex', 'strength')
-        .choose('+2 wisdom or dex', 'wisdom');
+        .choose('gameClass', 'Barbarian')
+        .choose('race', 'Human');
 
-      expect(character.strength).to.eq(10);
-      expect(character.wisdom).to.eq(12);
+      expect(character.ac()).to.eq(12);
     });
 
     it('can make choices that affect the same property', () => {
-      let character = Character.create()
+      const strengthOrDexterity = {
+        name: '+2 strength or dex',
+        options: {
+          strength: [
+            { field: 'strength', modifier: (str) => str + 2 },
+            { field: 'charisma', modifier: (wis) => wis - 5 },
+          ],
+          dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+        },
+      };
+
+      const wisdomOrIntelligence = {
+        name: '+2 wisdom or dex',
+        options: {
+          wisdom: [{ field: 'wisdom', modifier: (str) => str + 4 }],
+          dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 4 }],
+        },
+      };
+
+      // There aren't currently built in options that impact the same field, this
+      // creates a character with choices that aren't used in production in order
+      // to test eventual functionality.
+      let character = Character.create({ choices: [strengthOrDexterity, wisdomOrIntelligence]})
         .choose('+2 strength or dex', 'dexterity')
         .choose('+2 wisdom or dex', 'dexterity');
 
@@ -89,18 +106,18 @@ describe('Character', () => {
 
     it('choices can have multiple consequences', () => {
       let character = Character.create()
-        .choose('+2 strength or dex', 'strength');
-      expect(character.strength).to.eq(10);
-      expect(character.charisma).to.eq(3);
+        .choose('gameClass', 'Barbarian');
+
+      expect(character.ac()).to.eq(12);
+      expect(character.pd()).to.eq(11);
     });
 
     it('can be made again and overrides old choice', () => {
       let character = Character.create()
-        .choose('+2 strength or dex', 'dexterity')
-        .choose('+2 strength or dex', 'strength');
+        .choose('gameClass', 'Barbarian')
+        .choose('gameClass', 'Fighter');
 
-      expect(character.strength).to.eq(10);
-      expect(character.dexterity).to.eq(8);
+      expect(character.ac()).to.eq(15);
     });
 
     context('when the consequence of a choice is to set the value of a property', () => {
@@ -142,30 +159,17 @@ describe('Character', () => {
 
   describe('#unmakeChoice', () => {
     it('can unmake a decision, reverting the consequences', () => {
-      let character = Character.create().choose('+2 strength or dex', 'strength');
-      expect(character.unmakeChoice('+2 strength or dex').strength).to.eq(8);
+      let character = Character.create().choose('race', 'Human');
+      expect(character.unmakeChoice('race').race).to.eq('');
     });
 
     it('de-registers that choice and the chosen option', () => {
       expect(
         Character.create()
-          .choose('+2 strength or dex', 'strength')
-          .unmakeChoice('+2 strength or dex')
-          .chosenChoices['+2 strength or dex']
+          .choose('race', 'Human')
+          .unmakeChoice('race')
+          .chosenChoices.race
         ).to.eq(null);
-    });
-
-    context('when the consequence of a choice is to set the value of a property', () => {
-      context('and the consequence has an unset property', () => {
-        it('sets the value to the unset', () => {
-          expect(
-            Character.create()
-              .choose('race', 'Human')
-              .unmakeChoice('race')
-              .race
-            ).to.eq('');
-        });
-      });
     });
 
     context('when the choice had nested choices', () => {
@@ -246,9 +250,9 @@ describe('Character', () => {
 describe('combineModifiers', () => {
   describe('it takes the modifiers of a character and an array of new modifiers', () => {
     it('returns a new modifiers object with new modifiers added', () => {
-      let character = Character.create().choose('+2 strength or dex', 'strength');
+      let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
       let newModifiers = [
-        { field: 'dexterity', modifier: (dex) => { return dex + 5; } }
+        { field: 'dexterity', modifier: (dex) => dex + 5 }
       ];
       let combinedModifiers = combineModifiers(character.modifiers, newModifiers);
       expect(combinedModifiers.strength.length).to.eq(1);
@@ -260,7 +264,7 @@ describe('combineModifiers', () => {
 describe('removeModifiers', () => {
   describe('it takes the modifiers of a character an array of new modifiers', () => {
     it('returns a new modifiers object with modifiers removed', () => {
-      let character = Character.create().choose('+2 strength or dex', 'strength');
+      let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
       let revertedModifiers = [
         { field: 'strength', modifier: character.modifiers.strength[0] }
       ];
