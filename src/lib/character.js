@@ -2,15 +2,6 @@ import { fallbacks } from './utils.js';
 import RaceChoice from './races.js';
 import ClassChoice from './classes.js';
 
-export const abilities = [
-  'strength',
-  'dexterity',
-  'constitution',
-  'intelligence',
-  'wisdom',
-  'charisma',
-];
-
 export function combineModifiers(currentModifiers, newModifiers) {
   const combinedModifiers = newModifiers.reduce((modifiers, consequence) => (
     Object.assign(
@@ -139,7 +130,7 @@ Character.prototype = {
       diff.choices = character.choices.concat(newChoicesConsequence.addChoices);
     }
 
-    return Character.create(character, diff);
+    return new this.constructor(character, diff);
   },
   unmakeChoice(choiceName, options = {}) {
     const choice = this.getChoice(choiceName);
@@ -164,9 +155,9 @@ Character.prototype = {
       const nestedChoices = newChoicesConsequence.addChoices.map(c => c.name);
       return nestedChoices.reduce((character, revertedChoice) => (
         character.unmakeChoice(revertedChoice, { remove: true })
-      ), Character.create(this, diff));
+      ), this.constructor.create(this, diff));
     }
-    return Character.create(this, diff);
+    return this.constructor.create(this, diff);
   },
   optionsFor(name) {
     const choice = this.choices.find((c) => (c.name === name));
@@ -225,18 +216,6 @@ Object.keys(properties).forEach(prop => {
     },
   });
 });
-abilities.forEach(ability => {
-  Object.defineProperty(Character.prototype, `${ability}Mod`, {
-    get() {
-      return parseInt((this[ability] - 10) / 2, 10);
-    },
-  });
-  Object.defineProperty(Character.prototype, `${ability}ModPlusLevel`, {
-    get() {
-      return this[`${ability}Mod`] + this.level;
-    },
-  });
-});
 
 // TODO: Bigger improvements in order to not overload the params
 Character.create = function create(other, diff) {
@@ -249,7 +228,44 @@ Character.create = function create(other, diff) {
     constructorDiff = diff;
     constructorOther = other;
   }
-  return new Character(constructorOther, constructorDiff);
+  return new this(constructorOther, constructorDiff);
 };
+
+export function createCharacterBuilder(accessors = []) {
+  function Builder(...args) {
+    Character.call(this, ...args);
+  }
+  Builder.prototype = Object.create(Character.prototype);
+  Builder.prototype.constructor = Builder;
+
+  Object.defineProperty(Builder.prototype, 'foo', {
+    get() {
+      return 'hi there!';
+    },
+  });
+
+  // add custom accessors
+  Object.keys(accessors).forEach((accessor) => {
+    Object.defineProperty(Builder.prototype, accessor, {
+      get() {
+        return accessors[accessor](this);
+      },
+    });
+  });
+
+  Builder.create = function create(other, diff) {
+    let constructorDiff;
+    let constructorOther;
+    if (!diff) {
+      constructorDiff = other;
+      constructorOther = {};
+    } else {
+      constructorDiff = diff;
+      constructorOther = other;
+    }
+    return new Builder(constructorOther, constructorDiff);
+  };
+  return Builder;
+}
 
 export default Character;

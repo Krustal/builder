@@ -1,4 +1,5 @@
-import Character, { combineModifiers, removeModifiers } from '../../src/lib/character.js';
+import Character from '../../src/lib/thirteenth_age_character';
+import { combineModifiers, removeModifiers } from '../../src/lib/character.js';
 
 describe('Character', () => {
   describe('#constructor', () => {
