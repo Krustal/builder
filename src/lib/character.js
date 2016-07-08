@@ -1,6 +1,4 @@
 import { fallbacks } from './utils.js';
-import RaceChoice from './races.js';
-import ClassChoice from './classes.js';
 
 export function combineModifiers(currentModifiers, newModifiers) {
   const combinedModifiers = newModifiers.reduce((modifiers, consequence) => (
@@ -33,33 +31,13 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
   return remainingModifiers;
 }
 
-const properties = {
-  choices: [RaceChoice, ClassChoice],
-  name: '',
-  level: 1,
-  gameClass: null,
-  race: null,
-  strength: 8,
-  dexterity: 8,
-  constitution: 8,
-  intelligence: 8,
-  wisdom: 8,
-  charisma: 8,
-  baseAC: null,
-  basePD: null,
-  baseMD: null,
-  baseHP: null,
-  hpLevelMod: null,
-  currentHP: (c) => c.hp,
-};
-
 const createDiffFromUnsetters = (setters, oldDiff) => (
   setters.reduce((diff, consequence) => (
     Object.assign({}, diff, { [consequence.field]: consequence.unset })
   ), oldDiff)
 );
 
-function Character(other = {}, diff = {}) {
+function Character(other = {}, diff = {}, properties = {}) {
   this.setterModifiers = fallbacks(other.setterModifiers, {});
   this.modifiers = {};
 
@@ -127,7 +105,6 @@ Character.prototype = {
     if (newChoicesConsequence) {
       diff.choices = character.choices.concat(newChoicesConsequence.addChoices);
     }
-
     return new this.constructor(character, diff);
   },
   unmakeChoice(choiceName, options = {}) {
@@ -163,31 +140,9 @@ Character.prototype = {
   },
 };
 
-Object.keys(properties).forEach(prop => {
-  Object.defineProperty(Character.prototype, prop, {
-    get() {
-      return this._getModifiedProperty(prop);
-    },
-  });
-});
-
-// TODO: Bigger improvements in order to not overload the params
-Character.create = function create(other, diff) {
-  let constructorDiff;
-  let constructorOther;
-  if (!diff) {
-    constructorDiff = other;
-    constructorOther = {};
-  } else {
-    constructorDiff = diff;
-    constructorOther = other;
-  }
-  return new this(constructorOther, constructorDiff);
-};
-
-export function createCharacterBuilder(accessors = {}, methods = {}) {
-  function Builder(...args) {
-    Character.call(this, ...args);
+export function createCharacterBuilder(accessors = {}, methods = {}, properties = {}) {
+  function Builder(other = {}, diff = {}) {
+    Character.call(this, other, diff, properties);
   }
   const builderPrototype = Object.keys(methods).reduce((proto, method) =>
     Object.assign(
@@ -208,6 +163,14 @@ export function createCharacterBuilder(accessors = {}, methods = {}) {
     builderPrototype
   );
   Builder.prototype.constructor = Builder;
+
+  Object.keys(properties).forEach((prop) => {
+    Object.defineProperty(Builder.prototype, prop, {
+      get() {
+        return this._getModifiedProperty(prop);
+      },
+    });
+  });
 
   // add custom accessors
   Object.keys(accessors).forEach((accessor) => {

@@ -5,7 +5,8 @@ import { expect } from 'chai';
 describe('Character', () => {
   describe('#constructor', () => {
     it('sets default base strength ability score of 8', () => {
-      expect((new Character())._strength).to.eq(8);
+      const character = new Character();
+      expect(character._strength).to.eq(8);
     });
     it('computes the ability modifier', () => {
       expect(Character.create().strengthMod).to.eq(-1);
@@ -98,7 +99,7 @@ describe('Character', () => {
       // There aren't currently built in options that impact the same field, this
       // creates a character with choices that aren't used in production in order
       // to test eventual functionality.
-      let character = Character.create({ choices: [strengthOrDexterity, wisdomOrIntelligence]})
+      const character = Character.create({ choices: [strengthOrDexterity, wisdomOrIntelligence] })
         .choose('+2 strength or dex', 'dexterity')
         .choose('+2 wisdom or dex', 'dexterity');
 
