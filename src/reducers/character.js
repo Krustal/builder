@@ -1,4 +1,4 @@
-import Character from '../lib/character.js';
+import Character from '../lib/thirteenth_age_character.js';
 
 export default (state = Character.create(), action = {}) => {
   switch (action.type) {

@@ -6,7 +6,7 @@ const mapStateToProps = (state) => {
     numeratorLabel: "current",
     numerator: state.character.currentHP,
     denominatorLabel: "maximum",
-    denominator: state.character.hp()
+    denominator: state.character.hp
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

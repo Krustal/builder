@@ -4,7 +4,7 @@ import CombatStat from "../defense_stat.jsx";
 const mapStateToProps = (state) => {
   return {
     label: "AC",
-    value: state.character.ac()
+    value: state.character.ac
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {

@@ -33,8 +33,6 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
   return remainingModifiers;
 }
 
-export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
-
 const properties = {
   choices: [RaceChoice, ClassChoice],
   name: '',
@@ -52,7 +50,7 @@ const properties = {
   baseMD: null,
   baseHP: null,
   hpLevelMod: null,
-  currentHP: (c) => c.hp(),
+  currentHP: (c) => c.hp,
 };
 
 const createDiffFromUnsetters = (setters, oldDiff) => (
@@ -163,50 +161,6 @@ Character.prototype = {
     const choice = this.choices.find((c) => (c.name === name));
     return choice ? Object.keys(choice.options) : [];
   },
-  ac() {
-    if (this.baseAC) {
-      return this.baseAC +
-        middleMod(this.constitutionMod, this.dexterityMod, this.wisdomMod) +
-        this.level;
-    }
-    return null;
-  },
-  pd() {
-    if (this.basePD) {
-      return this.basePD +
-      middleMod(this.strengthMod, this.constitutionMod, this.dexterityMod) +
-      this.level;
-    }
-    return null;
-  },
-  md() {
-    if (this.baseMD) {
-      return this.baseMD +
-      middleMod(this.intelligenceMod, this.wisdomMod, this.charismaMod) +
-      this.level;
-    }
-    return null;
-  },
-  hp() {
-    if (this.baseHP && this.hpLevelMod) {
-      return (this.baseHP + this.constitutionMod) * this.hpLevelMod;
-    }
-    return null;
-  },
-  isUnconscious() {
-    const currentHP = parseInt(this.currentHP, 10);
-    if (!isNaN(this.hp()) && !isNaN(currentHP)) {
-      return currentHP <= 0;
-    }
-    return false;
-  },
-  isDead() {
-    const currentHP = parseInt(this.currentHP, 10);
-    if (!isNaN(this.hp()) && !isNaN(currentHP)) {
-      return currentHP <= -(this.hp() / 2);
-    }
-    return false;
-  },
 };
 
 Object.keys(properties).forEach(prop => {
@@ -231,18 +185,29 @@ Character.create = function create(other, diff) {
   return new this(constructorOther, constructorDiff);
 };
 
-export function createCharacterBuilder(accessors = []) {
+export function createCharacterBuilder(accessors = {}, methods = {}) {
   function Builder(...args) {
     Character.call(this, ...args);
   }
-  Builder.prototype = Object.create(Character.prototype);
-  Builder.prototype.constructor = Builder;
+  const builderPrototype = Object.keys(methods).reduce((proto, method) =>
+    Object.assign(
+      {},
+      proto,
+      {
+        [method]: {
+          value() {
+            return methods[method].call(this);
+          },
+        },
+      }
+    ), {}
+  );
 
-  Object.defineProperty(Builder.prototype, 'foo', {
-    get() {
-      return 'hi there!';
-    },
-  });
+  Builder.prototype = Object.create(
+    Character.prototype,
+    builderPrototype
+  );
+  Builder.prototype.constructor = Builder;
 
   // add custom accessors
   Object.keys(accessors).forEach((accessor) => {

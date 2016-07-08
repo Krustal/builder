@@ -1,5 +1,6 @@
 import Character from '../../src/lib/thirteenth_age_character';
 import { combineModifiers, removeModifiers } from '../../src/lib/character.js';
+import { expect } from 'chai';
 
 describe('Character', () => {
   describe('#constructor', () => {
@@ -67,12 +68,11 @@ describe('Character', () => {
         ).to.eq('Barbarian');
     });
 
-    it("doesn't override different choices", () => {
-      let character = Character.create()
+    it('doesn\'t override different choices', () => {
+      const character = Character.create()
         .choose('gameClass', 'Barbarian')
         .choose('race', 'Human');
-
-      expect(character.ac()).to.eq(12);
+      expect(character.ac).to.eq(12);
     });
 
     it('can make choices that affect the same property', () => {
@@ -109,8 +109,8 @@ describe('Character', () => {
       let character = Character.create()
         .choose('gameClass', 'Barbarian');
 
-      expect(character.ac()).to.eq(12);
-      expect(character.pd()).to.eq(11);
+      expect(character.ac).to.eq(12);
+      expect(character.pd).to.eq(11);
     });
 
     it('can be made again and overrides old choice', () => {
@@ -118,7 +118,7 @@ describe('Character', () => {
         .choose('gameClass', 'Barbarian')
         .choose('gameClass', 'Fighter');
 
-      expect(character.ac()).to.eq(15);
+      expect(character.ac).to.eq(15);
     });
 
     context('when the consequence of a choice is to set the value of a property', () => {
@@ -211,7 +211,7 @@ describe('Character', () => {
   describe('#ac', () => {
     it('requires a class to be chosen', () => {
       let character = Character.create();
-      expect(character.ac()).to.eq(null);
+      expect(character.ac).to.eq(null);
     });
 
     it('is computed from baseAC, middleMod, and level', () => {
@@ -225,7 +225,7 @@ describe('Character', () => {
           intelligence: 18
         })
         .choose('gameClass', 'Barbarian');
-      expect(character.ac()).to.eq(13);
+      expect(character.ac).to.eq(13);
     });
   });
 
