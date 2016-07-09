@@ -37,35 +37,36 @@ const createDiffFromUnsetters = (setters, oldDiff) => (
   ), oldDiff)
 );
 
-function Character(other = {}, diff = {}, properties = {}) {
-  this.setterModifiers = fallbacks(other.setterModifiers, {});
+// returns the value of defaultVal or evaluates it for obj
+const evalOrValueOf = (obj, defaultVal) => (
+  typeof defaultVal === 'function' ? defaultVal(obj) : defaultVal
+);
+
+function Character(base = {}, diff = {}, properties = {}) {
+  this.setterModifiers = {};
   this.modifiers = {};
 
+  // sets the property values, initially from diff, then other, then default
   Object.keys(properties).forEach(prop => {
-    let defaultValue = properties[prop];
-    if (typeof defaultValue === 'function') {
-      defaultValue = defaultValue.call(null, this);
-    }
-    let diffValue = this.setterModifiers[prop] || diff[prop];
-    if (typeof diffValue === 'function') {
-      this.setterModifiers[prop] = diffValue;
-      diffValue = diffValue.call(null, this);
-    }
+    const defaultValue = evalOrValueOf(this, properties[prop]);
 
-    this[`_${prop}`] = fallbacks(diffValue, other[`_${prop}`], defaultValue);
+    // The diff is either a setter (computed at evaluation time) or a static
+    const diffFrom = fallbacks(diff[prop], (base.setterModifiers && base.setterModifiers[prop]));
+    if (typeof diffFrom === 'function') {
+      this.setterModifiers[prop] = diffFrom;
+    }
+    const diffValue = evalOrValueOf(this, diffFrom);
+
+    // Store the unmodified value
+    this[`_${prop}`] = fallbacks(diffValue, base[`_${prop}`], defaultValue);
     this.modifiers[prop] = [];
   });
 
-  this.modifiers = fallbacks(diff.modifiers, other.modifiers, this.modifiers);
-
-  if (diff.chosenChoices) {
-    const oldChoices = other.chosenChoices || {};
-    const diffChoices = diff.chosenChoices || {};
-    const mergedChoices = Object.assign({}, oldChoices, diffChoices);
-    this.chosenChoices = mergedChoices;
-  } else {
-    this.chosenChoices = other.chosenChoices || {};
-  }
+  this.setterModifiers = Object.assign(
+    {}, diff.setterModifiers, base.setterModifiers, this.setterModifiers
+  );
+  this.modifiers = fallbacks(diff.modifiers, base.modifiers, this.modifiers);
+  this.chosenChoices = Object.assign({}, base.chosenChoices, diff.chosenChoices);
 }
 
 Character.prototype = {
