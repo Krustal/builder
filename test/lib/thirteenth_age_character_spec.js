@@ -1,5 +1,5 @@
 import Character from '../../src/lib/thirteenth_age_character';
-import { combineModifiers, removeModifiers } from '../../src/lib/character.js';
+import { combineModifiers, removeModifiers, InvalidChoice } from '../../src/lib/character.js';
 import chai, { expect } from 'chai';
 import dirtyChai from 'dirty-chai';
 
@@ -187,7 +187,16 @@ describe('Character', () => {
         name: 'ability choice two',
         options: {
           strength: {
-            restrictions: [((c) => c.getChoice('ability choice one') === 'strength')],
+            restrictions: [
+              {
+                reason: 'pointless restriction',
+                test: () => false,
+              },
+              {
+                reason: 'can\'t make the same choice as choice one',
+                test: (c) => c.chosenChoices['ability choice one'] === 'strength',
+              },
+            ],
             consequences: [{ field: 'strength', modifier: (str) => str + 2 }],
           },
           dexterity: {
@@ -201,13 +210,27 @@ describe('Character', () => {
       // to test eventual functionality.
       const character = Character.create({ choices: [abilityChoiceOne, abilityChoiceTwo] });
 
-      it('permits the choice if the restrictions aren\'t met', () => {
-        expect(
-          character
-            .choose('ability choice one', 'strength')
-            .choose('ability choice two', 'strength')
-            .strength
-        ).to.eq(12);
+      it('permits the choice if the restrictions failed', () => {
+        const testCharacter = character
+          .choose('ability choice one', 'strength')
+          .choose('ability choice two', 'dexterity');
+        expect(testCharacter.strength).to.eq(10);
+        expect(testCharacter.dexterity).to.eq(10);
+      });
+
+      it('raises an exception if a choose is made that is restricted', () => {
+        const badChoice = () => character
+          .choose('ability choice one', 'strength')
+          .choose('ability choice two', 'strength');
+        expect(badChoice).to.throw(InvalidChoice, /can't make the same choice as choice one/);
+      });
+
+      it('only evaluates restrictions at the time of the choice', () => {
+        const fineChoice = () => character
+          .choose('ability choice two', 'strength')
+          .choose('ability choice one', 'strength');
+        expect(fineChoice).to.not.throw(InvalidChoice, /can't make the same choice as choice one/);
+        expect(fineChoice().strength).to.eq(12);
       });
     });
   });

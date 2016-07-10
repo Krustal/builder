@@ -31,6 +31,14 @@ export function removeModifiers(currentModifiers, modifiersToRemove) {
   return remainingModifiers;
 }
 
+export function InvalidChoice(message) {
+  this.message = message;
+  this.name = 'InvalidChoice';
+  this.stack = (new Error()).stack;
+}
+InvalidChoice.prototype = Object.create(Error.prototype);
+InvalidChoice.prototype.constructor = InvalidChoice;
+
 const createDiffFromUnsetters = (setters, oldDiff) => (
   setters.reduce((diff, consequence) => (
     Object.assign({}, diff, { [consequence.field]: consequence.unset })
@@ -88,6 +96,12 @@ Character.prototype = {
     const option = choice.options[optionName];
     if (!option) {
       throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
+    }
+
+    const restrictions = option.restrictions || [];
+    const failedRestriction = restrictions.find((restriction) => restriction.test(this));
+    if (failedRestriction) {
+      throw new InvalidChoice(failedRestriction.reason || 'choice is restricted, no reason given');
     }
 
     let diff = { chosenChoices: { [choiceName]: optionName } };
