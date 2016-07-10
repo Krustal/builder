@@ -1,6 +1,9 @@
 import Character from '../../src/lib/thirteenth_age_character';
 import { combineModifiers, removeModifiers } from '../../src/lib/character.js';
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import dirtyChai from 'dirty-chai';
+
+chai.use(dirtyChai);
 
 describe('Character', () => {
   describe('#constructor', () => {
@@ -27,11 +30,11 @@ describe('Character', () => {
       expect((new Character())._charisma).to.eq(8);
     });
     it('has a blank default name', () => {
-      let character = new Character();
+      const character = new Character();
       expect(character.name).to.eq('');
     });
     it('has a default level of 1', () => {
-      let character = new Character();
+      const character = new Character();
       expect(character.level).to.eq(1);
     });
     it('has a blank class by default', () => {
@@ -47,14 +50,14 @@ describe('Character', () => {
 
     context('when passing another character and diff properties', () => {
       it('returns a new character with updated properties', () => {
-        let initialCharacter = Character.create();
-        let otherCharacter = new Character(initialCharacter, { name: 'Byron' });
+        const initialCharacter = Character.create();
+        const otherCharacter = new Character(initialCharacter, { name: 'Byron' });
         expect(otherCharacter.name).to.eq('Byron');
       });
 
       it('for properties with possible modifiers the updated field is the base', () => {
-        let initialCharacter = Character.create();
-        let otherCharacter = Character.create(initialCharacter, { strength: 12 });
+        const initialCharacter = Character.create();
+        const otherCharacter = Character.create(initialCharacter, { strength: 12 });
         expect(otherCharacter._strength).to.eq(12);
       });
     });
@@ -107,7 +110,7 @@ describe('Character', () => {
     });
 
     it('choices can have multiple consequences', () => {
-      let character = Character.create()
+      const character = Character.create()
         .choose('gameClass', 'Barbarian');
 
       expect(character.ac).to.eq(12);
@@ -115,7 +118,7 @@ describe('Character', () => {
     });
 
     it('can be made again and overrides old choice', () => {
-      let character = Character.create()
+      const character = Character.create()
         .choose('gameClass', 'Barbarian')
         .choose('gameClass', 'Fighter');
 
@@ -136,24 +139,26 @@ describe('Character', () => {
 
     context('when the choice is based on a condition', () => {
       it('only the consequence that meets the condition is applied', () => {
-        let character = Character.create().choose('gameClass', 'Barbarian');
+        const character = Character.create().choose('gameClass', 'Barbarian');
         expect(character.hpLevelMod).to.eq(3);
       });
 
       it('updates the consequence with the conditional changes', () => {
-        let character = Character.create().choose('gameClass', 'Barbarian');
-        let otherCharacter = Character.create(character, { level: 2 });
+        const character = Character.create().choose('gameClass', 'Barbarian');
+        const otherCharacter = Character.create(character, { level: 2 });
         expect(otherCharacter.hpLevelMod).to.eq(4);
       });
     });
 
     context('when the consequence for a choice is additional choices', () => {
       it('adds that choice to the resulting character', () => {
-        let character = Character.create().choose('race', 'Human');
+        const character = Character.create().choose('race', 'Human');
         expect(character.choices.map(c => c.name)).to.include('+2 racial ability bonus');
       });
       it('that choice can be chosen like normal', () => {
-        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
+        const character = Character.create()
+          .choose('race', 'Human')
+          .choose('+2 racial ability bonus', 'Strength');
         expect(character.strength).to.eq(10);
       });
     });
@@ -161,7 +166,7 @@ describe('Character', () => {
 
   describe('#unmakeChoice', () => {
     it('can unmake a decision, reverting the consequences', () => {
-      let character = Character.create().choose('race', 'Human');
+      const character = Character.create().choose('race', 'Human');
       expect(character.unmakeChoice('race').race).to.eq('');
     });
 
@@ -176,16 +181,21 @@ describe('Character', () => {
 
     context('when the choice had nested choices', () => {
       it('the nested choices are reverted too', () => {
-        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
-        let newCharacter = character.unmakeChoice('race');
+        const character = Character.create()
+          .choose('race', 'Human')
+          .choose('+2 racial ability bonus', 'Strength');
+        const newCharacter = character.unmakeChoice('race');
         expect(newCharacter.strength).to.eq(8);
       });
 
       it('removes the nested choices from the characters choices', () => {
-        let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
-        let newCharacter = character.unmakeChoice('race');
-        expect(newCharacter._choices.find(choice => choice.name === '+2 racial ability bonus'))
-          .to.be.undefined;
+        const character = Character.create()
+          .choose('race', 'Human')
+          .choose('+2 racial ability bonus', 'Strength');
+        const newCharacter = character.unmakeChoice('race');
+        expect(
+          newCharacter._choices.find(choice => choice.name === '+2 racial ability bonus')
+        ).to.be.undefined();
       });
     });
 
@@ -211,39 +221,39 @@ describe('Character', () => {
 
   describe('#ac', () => {
     it('requires a class to be chosen', () => {
-      let character = Character.create();
+      const character = Character.create();
       expect(character.ac).to.eq(null);
     });
 
     it('is computed from baseAC, middleMod, and level', () => {
-      let character = Character
+      const character = Character
         .create({
           strength: 8,
           constitution: 10,
           dexterity: 12,
           wisdom: 8,
           charisma: 8,
-          intelligence: 18
+          intelligence: 18,
         })
         .choose('gameClass', 'Barbarian');
       expect(character.ac).to.eq(13);
     });
   });
 
-  describe("#isUnconscious", () => {
+  describe('#isUnconscious', () => {
     it('is true if character hp is below 0', () => {
-      let character = Character.create({ baseHP: 10 });
+      const character = Character.create({ baseHP: 10 });
       expect(character.isUnconscious()).to.eq(false);
-      let newCharacter = Character.create(character, { currentHP: 0 });
+      const newCharacter = Character.create(character, { currentHP: 0 });
       expect(newCharacter.isUnconscious()).to.eq(true);
     });
   });
 
-  describe("#isDead", () => {
+  describe('#isDead', () => {
     it('is true if character hp is below negative half of total', () => {
-      let character = Character.create({ baseHP: 10 });
+      const character = Character.create({ baseHP: 10 });
       expect(character.isDead()).to.eq(false);
-      let newCharacter = Character.create(character, { currentHP: -5 });
+      const newCharacter = Character.create(character, { currentHP: -5 });
       expect(newCharacter.isDead()).to.eq(true);
     });
   });
@@ -252,11 +262,13 @@ describe('Character', () => {
 describe('combineModifiers', () => {
   describe('it takes the modifiers of a character and an array of new modifiers', () => {
     it('returns a new modifiers object with new modifiers added', () => {
-      let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
-      let newModifiers = [
-        { field: 'dexterity', modifier: (dex) => dex + 5 }
+      const character = Character.create()
+        .choose('race', 'Human')
+        .choose('+2 racial ability bonus', 'Strength');
+      const newModifiers = [
+        { field: 'dexterity', modifier: (dex) => dex + 5 },
       ];
-      let combinedModifiers = combineModifiers(character.modifiers, newModifiers);
+      const combinedModifiers = combineModifiers(character.modifiers, newModifiers);
       expect(combinedModifiers.strength.length).to.eq(1);
       expect(combinedModifiers.dexterity.length).to.eq(1);
     });
@@ -266,11 +278,13 @@ describe('combineModifiers', () => {
 describe('removeModifiers', () => {
   describe('it takes the modifiers of a character an array of new modifiers', () => {
     it('returns a new modifiers object with modifiers removed', () => {
-      let character = Character.create().choose('race', 'Human').choose('+2 racial ability bonus', 'Strength');
-      let revertedModifiers = [
-        { field: 'strength', modifier: character.modifiers.strength[0] }
+      const character = Character.create()
+        .choose('race', 'Human')
+        .choose('+2 racial ability bonus', 'Strength');
+      const revertedModifiers = [
+        { field: 'strength', modifier: character.modifiers.strength[0] },
       ];
-      let remainingModifiers = removeModifiers(character.modifiers, revertedModifiers);
+      const remainingModifiers = removeModifiers(character.modifiers, revertedModifiers);
       expect(remainingModifiers.strength.length).to.eq(0);
     });
   });
