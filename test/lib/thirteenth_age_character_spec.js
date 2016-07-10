@@ -83,19 +83,27 @@ describe('Character', () => {
       const strengthOrDexterity = {
         name: '+2 strength or dex',
         options: {
-          strength: [
-            { field: 'strength', modifier: (str) => str + 2 },
-            { field: 'charisma', modifier: (wis) => wis - 5 },
-          ],
-          dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+          strength: {
+            consequences: [
+              { field: 'strength', modifier: (str) => str + 2 },
+              { field: 'charisma', modifier: (wis) => wis - 5 },
+            ],
+          },
+          dexterity: {
+            consequences: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+          },
         },
       };
 
       const wisdomOrIntelligence = {
         name: '+2 wisdom or dex',
         options: {
-          wisdom: [{ field: 'wisdom', modifier: (str) => str + 4 }],
-          dexterity: [{ field: 'dexterity', modifier: (dex) => dex + 4 }],
+          wisdom: {
+            consequences: [{ field: 'wisdom', modifier: (str) => str + 4 }],
+          },
+          dexterity: {
+            consequences: [{ field: 'dexterity', modifier: (dex) => dex + 4 }],
+          },
         },
       };
 
@@ -105,7 +113,6 @@ describe('Character', () => {
       const character = Character.create({ choices: [strengthOrDexterity, wisdomOrIntelligence] })
         .choose('+2 strength or dex', 'dexterity')
         .choose('+2 wisdom or dex', 'dexterity');
-
       expect(character.dexterity).to.eq(14);
     });
 
@@ -160,6 +167,47 @@ describe('Character', () => {
           .choose('race', 'Human')
           .choose('+2 racial ability bonus', 'Strength');
         expect(character.strength).to.eq(10);
+      });
+    });
+
+    context('when the choice has restrictions', () => {
+      const abilityChoiceOne = {
+        name: 'ability choice one',
+        options: {
+          strength: {
+            consequences: [{ field: 'strength', modifier: (str) => str + 2 }],
+          },
+          dexterity: {
+            consequences: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+          },
+        },
+      };
+
+      const abilityChoiceTwo = {
+        name: 'ability choice two',
+        options: {
+          strength: {
+            restrictions: [((c) => c.getChoice('ability choice one') === 'strength')],
+            consequences: [{ field: 'strength', modifier: (str) => str + 2 }],
+          },
+          dexterity: {
+            consequences: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
+          },
+        },
+      };
+
+      // There aren't currently built in options that impact the same field, this
+      // creates a character with choices that aren't used in production in order
+      // to test eventual functionality.
+      const character = Character.create({ choices: [abilityChoiceOne, abilityChoiceTwo] });
+
+      it('permits the choice if the restrictions aren\'t met', () => {
+        expect(
+          character
+            .choose('ability choice one', 'strength')
+            .choose('ability choice two', 'strength')
+            .strength
+        ).to.eq(12);
       });
     });
   });

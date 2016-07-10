@@ -1,18 +1,20 @@
-const createClassOption = (name, {ac, pd, md, hp, recoveries, recoveryDice, hpLevelMod }={}) => {
-  return [
-    { field: 'gameClass', set: name, unset: ''},
-    // TODO: This is actually a choice based on the armor weight, so this should
-    // be the smartest choice, most classes have a pretty clear best option.
-    { field: 'baseAC', set: ac, unset: null },
-    { field: 'basePD', set: pd, unset: null },
-    { field: 'baseMD', set: md, unset: null },
-    { field: 'baseHP', set: hp, unset: null },
-    { field: 'hpLevelMod', set: (c) => hpLevelMod[c.level - 1] },
-    { field: 'recoveries', set: recoveries, unset: null },
-    { field: 'recoveryDice', set: recoveryDice, unset: null }
-    // TODO: Add talent choices, based on level
-    // TODO: Add feat choices, based on level
-  ];
+const createClassOption = (name, { ac, pd, md, hp, recoveries, recoveryDice, hpLevelMod } = {}) => {
+  return {
+    consequences: [
+      { field: 'gameClass', set: name, unset: '' },
+      // TODO: This is actually a choice based on the armor weight, so this should
+      // be the smartest choice, most classes have a pretty clear best option.
+      { field: 'baseAC', set: ac, unset: null },
+      { field: 'basePD', set: pd, unset: null },
+      { field: 'baseMD', set: md, unset: null },
+      { field: 'baseHP', set: hp, unset: null },
+      { field: 'hpLevelMod', set: (c) => hpLevelMod[c.level - 1] },
+      { field: 'recoveries', set: recoveries, unset: null },
+      { field: 'recoveryDice', set: recoveryDice, unset: null },
+      // TODO: Add talent choices, based on level
+      // TODO: Add feat choices, based on level
+    ],
+  };
 };
 
 const Barbarian = createClassOption(

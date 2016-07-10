@@ -85,13 +85,14 @@ Character.prototype = {
 
     const choice = character.getChoice(choiceName);
 
-    const consequences = choice.options[optionName];
-    if (!consequences) {
+    const option = choice.options[optionName];
+    if (!option) {
       throw Error(`Not a valid option for choice: ${choiceName}, option: ${optionName}`);
     }
 
     let diff = { chosenChoices: { [choiceName]: optionName } };
 
+    const consequences = option.consequences || [];
     const consequenceModifiers = consequences.filter(c => (c.modifier));
     diff.modifiers = combineModifiers(character.modifiers, consequenceModifiers);
 
@@ -113,7 +114,8 @@ Character.prototype = {
     const chosenOptionName = this.chosenChoices[choiceName];
 
     // If no option is found then there aren't consequences to revert
-    const consequences = choice.options[chosenOptionName] || [];
+    const option = choice.options[chosenOptionName] || {};
+    const consequences = option.consequences || [];
 
     let diff = { chosenChoices: { [choiceName]: null } };
     if (options.remove) {
