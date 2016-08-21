@@ -1,7 +1,7 @@
-import { createStore, combineReducers, compose } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import character from '../reducers/character.js';
-import DevTools from '../components/dev_tools.jsx';
 
 const reducer = combineReducers({ character });
 
-export default (initialState) => createStore(reducer, {});
+export default () => createStore(reducer, applyMiddleware(thunk));
