@@ -1,62 +1,54 @@
-const Human = {
-  consequences: [
-    { field: 'race', set: 'Human', unset: '' },
-    {
-      addChoices: [
+const abilityChoices = abilities => (
+  abilities.reduce((options, ability) => ({
+    ...options,
+    [ability]: {
+      restrictions: [
         {
-          name: '+2 racial ability bonus',
-          options: {
-            Strength: {
-              consequences: [{ field: 'strength', modifier: (str) => str + 2 }],
-            },
-            Dexterity: {
-              consequences: [{ field: 'dexterity', modifier: (dex) => dex + 2 }],
-            },
-            Constitution: {
-              consequences: [{ field: 'constitution', modifier: (con) => con + 2 }],
-            },
-            Intelligence: {
-              consequences: [{ field: 'intelligence', modifier: (int) => int + 2 }],
-            },
-            Wisdom: {
-              consequences: [{ field: 'wisdom', modifier: (wis) => wis + 2 }],
-            },
-            Charisma: {
-              consequences: [{ field: 'charisma', modifier: (cha) => cha + 2 }],
-            },
-          },
+          reason: 'Can\'t use same bonus as class',
+          test: c => c.chosenChoices['+2 class ability bonus'] === ability,
         },
       ],
+      consequences: [{ field: ability.toLowerCase(), modifier: abl => abl + 2 }],
     },
-  ],
-};
+  }), {})
+);
 
-const HighElf = {
+const createRaceOption = (name, { abilityBonusOptions } = {}) => ({
   consequences: [
-    { field: 'race', set: 'HighElf', unset: '' },
+    { field: 'race', set: name, unset: '' },
     {
       addChoices: [
         {
           name: '+2 racial ability bonus',
-          options: {
-            Intelligence: {
-              consequences: [{ field: 'intelligence', modifier: (int) => int + 2 }],
-            },
-            Charisma: {
-              consequences: [{ field: 'charisma', modifier: (cha) => cha + 2 }],
-            },
-          },
+          options: abilityChoices(abilityBonusOptions),
         },
       ],
     },
   ],
-};
+});
+
+const DarkElf = createRaceOption('DarkElf', { abilityBonusOptions: ['Dexterity', 'Charisma'] });
+const Dwarf = createRaceOption('Dwarf', { abilityBonusOptions: ['Constitution', 'Wisdom'] });
+const Gnome = createRaceOption('Gnome', { abilityBonusOptions: ['Dexterity', 'Intelligence'] });
+const WoodElf = createRaceOption('WoodElf', { abilityBonusOptions: ['Dexterity', 'Wisdom'] });
+const HalfElf = createRaceOption('HalfElf', { abilityBonusOptions: ['Constitution', 'Charisma'] });
+const HalfOrc = createRaceOption('HalfOrc', { abilityBonusOptions: ['Strength', 'Dexterity'] });
+const Halfling = createRaceOption('Halfling', { abilityBonusOptions: ['Constitution', 'Dexterity'] });
+const Human = createRaceOption('Human', { abilityBonusOptions: ['Strength', 'Constitution', 'Dexterity', 'Intelligence', 'Wisdom', 'Charisma'] });
+const HighElf = createRaceOption('HighElf', { abilityBonusOptions: ['Intelligence', 'Charisma'] });
 
 const RaceChoice = {
   name: 'race',
   options: {
     Human,
+    Dwarf,
     HighElf,
+    DarkElf,
+    WoodElf,
+    Gnome,
+    HalfElf,
+    HalfOrc,
+    Halfling,
   },
 };
 export default RaceChoice;

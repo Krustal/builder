@@ -7,6 +7,13 @@ import { changeRace, makeChoice } from '../../actions';
 const raceOptionsMap = {
   HighElf: 'High Elf',
   Human: 'Human',
+  DarkElf: 'Dark Elf',
+  WoodElf: 'Wood Elf',
+  HalfOrc: 'Half-orc',
+  HalfElf: 'Half-elf',
+  Halfling: 'Halfling',
+  Gnome: 'Gnome',
+  Dwarf: 'Dwarf',
 };
 
 const abilityOptionsMap = {
