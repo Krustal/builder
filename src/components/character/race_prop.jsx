@@ -2,10 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SelectInput from '../form/select_input.jsx';
 import InlineRadioBoxes from '../form/inline_radio_boxes.jsx';
+import { changeRace } from '../../actions';
 
 const raceOptionsMap = {
   HighElf: 'High Elf',
-  Human: 'Human'
+  Human: 'Human',
 };
 
 const abilityOptionsMap = {
@@ -14,30 +15,31 @@ const abilityOptionsMap = {
   Constitution: 'con',
   Wisdom: 'wis',
   Intelligence: 'int',
-  Charisma: 'cha'
+  Charisma: 'cha',
 };
 
 const mapStateToProps = (state) => {
-  const raceOptions = state.character.optionsFor('race').map(option => (
+  const raceOptions = state.character.raceOptions.map(option => (
     { label: raceOptionsMap[option], value: option }
   ));
 
   const bonusOptions = state.character
-    .optionsFor('+2 racial ability bonus').map((option) => {
-      return { label: abilityOptionsMap[option], value: option };
-    });
+    .racialAbilityBonusOptions.map(option => (
+      { label: abilityOptionsMap[option], value: option }
+    ));
 
   return {
-    label: "Race",
-    bonusOptions: bonusOptions,
-    value: state.character.chosenChoices.race,
-    options: raceOptions || []
+    label: 'Race',
+    bonusOptions,
+    value: state.character.race,
+    options: raceOptions || [],
   };
 };
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updateCB: (value) => {
-      dispatch({ type: "CHARACTER_RACE_CHANGE", race: value });
+      dispatch(changeRace(value));
     },
     racialAbilityBonusCB: (value) => {
       dispatch({ type: "CHARACTER_RACIAL_ABILITY_BONUS_CHANGE", ability: value });

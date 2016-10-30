@@ -55,6 +55,12 @@ describe('Character', () => {
         expect(otherCharacter.name).to.eq('Byron');
       });
 
+      it('provides setters for props that act as abstractions of creating new characters', () => {
+        const initialCharacter = Character.create();
+        const otherCharacter = initialCharacter.set('name', 'Byron');
+        expect(otherCharacter.name).to.eq('Byron');
+      });
+
       it('for properties with possible modifiers the updated field is the base', () => {
         const initialCharacter = Character.create();
         const otherCharacter = Character.create(initialCharacter, { strength: 12 });
@@ -152,7 +158,7 @@ describe('Character', () => {
 
       it('updates the consequence with the conditional changes', () => {
         const character = Character.create().choose('gameClass', 'Barbarian');
-        const otherCharacter = Character.create(character, { level: 2 });
+        const otherCharacter = character.set('level', 2);
         expect(otherCharacter.hpLevelMod).to.eq(4);
       });
     });

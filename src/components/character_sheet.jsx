@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { loadCharacter } from '../actions';
 import Barbarian from '../constants/classes/barbarian.js';
 import logoStyles from '../styles/logo.css';
 import characterSheetStyles from '../styles/components/character_sheet.scss';
@@ -9,6 +10,10 @@ import Stats from './character/stats.jsx';
 import DeadStatus from './character/dead_status.jsx';
 
 class CharacterSheet extends React.Component {
+  componentWillMount() {
+    this.props.createCharacter();
+  }
+
   render() {
     let { isDead } = this.props;
     let overlayStatus = '';
@@ -21,7 +26,7 @@ class CharacterSheet extends React.Component {
       <form className={characterSheetStyles.default}>
         <div className="logo" />
         <CharacterOverview />
-        <Stats />
+        {/*<Stats />*/}
         {overlayStatus}
       </form>
     );
@@ -30,8 +35,14 @@ class CharacterSheet extends React.Component {
 
 const mapStateToProps = (state) => (
   {
-    isDead: state.character.isDead()
+    isDead: state.character.isDead,
   }
 );
 
-export default connect(mapStateToProps)(CharacterSheet);
+const mapDispatchToProps = (dispatch) => (
+  {
+    createCharacter: () => dispatch(loadCharacter()),
+  }
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CharacterSheet);

@@ -1,7 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import character from '../reducers/character.js';
+import Character from '../lib/thirteenth_age_character.js';
+import characterReducer from '../reducers/character.js';
 
-const reducer = combineReducers({ character });
+const initialCharacter = Character.create();
 
-export default () => createStore(reducer, applyMiddleware(thunk));
+const reducer = combineReducers({ character: characterReducer(initialCharacter) });
+
+export default () => createStore(
+  reducer,
+  applyMiddleware(thunk.withExtraArgument({ character: initialCharacter }))
+);

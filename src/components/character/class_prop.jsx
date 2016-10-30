@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SelectInput from '../form/select_input.jsx';
 import InlineRadioBoxes from '../form/inline_radio_boxes.jsx';
+import { changeGameClass } from '../../actions';
 
 const abilityOptionsMap = {
   Strength: 'str',
@@ -13,27 +14,25 @@ const abilityOptionsMap = {
 };
 
 const mapStateToProps = (state) => {
-  const classOptions = state.character.optionsFor('gameClass').map(option => (
+  const classOptions = state.character.gameClassOptions.map(option => (
     { label: option, value: option }
   ));
 
   const bonusOptions = state.character
-    .optionsFor('+2 class ability bonus').map((option) => (
+    .gameClassAbilityBonusOptions.map((option) => (
       { label: abilityOptionsMap[option], value: option }
     ));
 
   return {
     label: 'Class',
-    value: state.character.chosenChoices.gameClass,
+    value: state.character.gameClass,
     options: classOptions || [],
     bonusOptions,
   };
 };
-const mapDispatchToProps = (dispatch) => (
+const mapDispatchToProps = dispatch => (
   {
-    updateCB: (value) => {
-      dispatch({ type: 'CHARACTER_CLASS_CHANGE', gameClass: value });
-    },
+    updateCB: value => dispatch(changeGameClass(value)),
     classAbilityBonusCB: (value) => {
       dispatch({ type: 'CHARACTER_CLASS_ABILITY_BONUS_CHANGE', ability: value });
     },

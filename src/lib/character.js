@@ -155,6 +155,9 @@ Character.prototype = {
     const choice = this.choices.find((c) => (c.name === name));
     return choice ? Object.keys(choice.options) : [];
   },
+  set(property, value) {
+    return new this.constructor(this, { [property]: value });
+  },
 };
 
 export function createCharacterBuilder(accessors = {}, methods = {}, properties = {}) {

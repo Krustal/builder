@@ -33,7 +33,7 @@ const Human = {
 
 const HighElf = {
   consequences: [
-    { field: 'race', set: 'High Elf', unset: '' },
+    { field: 'race', set: 'HighElf', unset: '' },
     {
       addChoices: [
         {

@@ -1,20 +1,21 @@
 import { connect } from 'react-redux';
 import TextInput from '../form/text_input.jsx';
+import { changeLevel } from '../../actions';
 
-const mapStateToProps = (state) => {
-  return {
-    value: state.character.level
-  };
-};
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
+const mapStateToProps = state => (
+  {
+    value: state.character.level,
+  }
+);
+const mapDispatchToProps = (dispatch, _ownProps) => (
+  {
     updateCB: (value) => {
-      let level = value ? parseInt(value, 10) : 0;
-      if(!Number.isNaN(level)) {
-        dispatch({ type: "LEVEL_CHANGE", level: level });
+      const level = value ? parseInt(value, 10) : 0;
+      if (!Number.isNaN(level)) {
+        dispatch(changeLevel(level));
       }
-    }
-  };
-};
+    },
+  }
+);
 const LevelProp = connect(mapStateToProps, mapDispatchToProps)(TextInput);
 export default LevelProp;

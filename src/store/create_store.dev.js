@@ -1,12 +1,15 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import character from '../reducers/character.js';
+import Character from '../lib/thirteenth_age_character.js';
+import characterReducer from '../reducers/character.js';
 import DevTools from '../components/dev_tools.jsx';
 
-const reducer = combineReducers({ character });
+const initialCharacter = Character.create();
+
+const reducer = combineReducers({ character: characterReducer });
 
 const enhancer = compose(
-  applyMiddleware(thunk),
+  applyMiddleware(thunk.withExtraArgument({ character: initialCharacter })),
   DevTools.instrument()
 );
 

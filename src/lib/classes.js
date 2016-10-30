@@ -39,7 +39,7 @@ const createClassOption = (name, { ac, pd, md, hp, recoveries, recoveryDice, hpL
 );
 
 const Barbarian = createClassOption(
-  'barbarian',
+  'Barbarian',
   {
     ac: 12,
     pd: 11,
@@ -51,7 +51,7 @@ const Barbarian = createClassOption(
   }
 );
 const Fighter = createClassOption(
-  'fighter',
+  'Fighter',
   {
     ac: 15,
     pd: 10,
