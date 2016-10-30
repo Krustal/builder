@@ -3,39 +3,48 @@ export const CHANGE_NAME = 'CHANGE_NAME';
 export const CHANGE_RACE = 'CHANGE_RACE';
 export const CHANGE_GAME_CLASS = 'CHANGE_GAME_CLASS';
 export const CHANGE_LEVEL = 'CHANGE_LEVEL';
+export const SET_PROPERTY = 'SET_PROPERTY';
 
-export const loadCharacter = () => (dispatch, getState, { character }) =>
+export const loadCharacter = () => (dispatch, getState, { characterInterface }) =>
     dispatch({
       type: LOAD_CHARACTER,
-      character,
+      character: characterInterface.character,
     });
 
-export const changeName = name => (dispatch, _s, { character }) =>
+export const changeName = name => (dispatch, _s, { characterInterface }) =>
   dispatch(
     {
       type: CHANGE_NAME,
-      character: character.set('name', name),
+      character: characterInterface.set('name', name).character,
     }
   );
 
-export const changeRace = race => (dispatch, _s, { character }) =>
+export const changeRace = race => (dispatch, _s, { characterInterface }) =>
   dispatch(
     {
       type: CHANGE_RACE,
-      character: character.choose('race', race),
+      character: characterInterface.choose('race', race).character,
     }
   );
 
-export const changeGameClass = gameClass => (dispatch, _s, { character }) =>
+export const changeGameClass = gameClass => (dispatch, _s, { characterInterface }) =>
   dispatch(
     {
       type: CHANGE_GAME_CLASS,
-      character: character.choose('gameClass', gameClass),
+      character: characterInterface.choose('gameClass', gameClass).character,
     }
   );
 
-export const changeLevel = level => (dispatch, _s, { character }) =>
+export const changeLevel = level => (dispatch, _s, { characterInterface }) =>
   dispatch({
     type: CHANGE_LEVEL,
-    character: character.set('level', level),
+    character: characterInterface.set('level', level).character,
+  });
+
+export const setProperty = (property, value) => (dispatch, _s, { characterInterface }) =>
+  dispatch({
+    type: SET_PROPERTY,
+    property,
+    value,
+    character: characterInterface.set(property, value).character,
   });

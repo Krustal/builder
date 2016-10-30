@@ -12,7 +12,7 @@ import CombatStatsStyle from '../../styles/components/combat_stats.css';
 import HeaderStyle from '../../styles/headers.scss';
 import StatFieldStyles from '../../styles/components/combat_stat.css';
 
- const CombatStats = () => (
+const CombatStats = () => (
   <div className={CombatStatsStyle.combatStats}>
     <ACField>Armor Class</ACField>
     <PDField>Physical Defense</PDField>

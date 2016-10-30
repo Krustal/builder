@@ -1,47 +1,43 @@
 import React from 'react';
-import CharacterAbilityStyles from '../../styles/components/character_abilities.scss';
 import { connect } from 'react-redux';
 
-var abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
+import CharacterAbilityStyles from '../../styles/components/character_abilities.scss';
+import { setProperty } from '../../actions';
+
+const abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
 
 class CharacterAbilities extends React.Component {
   render() {
     const { character, abilityChange } = this.props;
-    var abilityScores = abilities.map((ability) => {
-      return (
-        <td key={ability + 'score'}>
-          <input
-            className="ability"
-            type="text"
-            min={0}
-            max={40}
-            value={character[ability]}
-            onChange={(evt) => abilityChange(ability, evt.target.value)} />
-        </td>
-      );
-    });
-    var abilityModifiers = abilities.map((ability) => {
-      return (
-        <td key={ability + 'mod'}>
-          <input
-            className="ability"
-            type="text"
-            value={character[`${ability}Mod`]}
-            disabled={true} />
-        </td>
-      );
-    });
-    var abilityModifiersPlusLevel = abilities.map((ability) => {
-      return (
-        <td key={ability + 'modlevel'}>
-          <input
-            className="ability"
-            type="text"
-            value={character[`${ability}ModPlusLevel`]}
-            disabled={true} />
-        </td>
-      );
-    });
+    const abilityScores = abilities.map(ability => (
+      <td key={`${ability}score`}>
+        <input
+          className="ability"
+          type="text"
+          min={0}
+          max={40}
+          value={character[ability]}
+          onChange={evt => abilityChange(ability, evt.target.value)} />
+      </td>
+    ));
+    const abilityModifiers = abilities.map(ability => (
+      <td key={`${ability}mod`}>
+        <input
+          className="ability"
+          type="text"
+          value={character[`${ability}Mod`]}
+          disabled={true} />
+      </td>
+    ));
+    const abilityModifiersPlusLevel = abilities.map(ability => (
+      <td key={`${ability}modlevel`}>
+        <input
+          className="ability"
+          type="text"
+          value={character[`${ability}ModPlusLevel`]}
+          disabled={true} />
+      </td>
+    ));
     return (
       <div className={CharacterAbilityStyles.characterAbilities}>
         <table>
@@ -89,17 +85,18 @@ class CharacterAbilities extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    character: state.character
-  };
-};
+const mapStateToProps = state => (
+  {
+    character: state.character,
+  }
+);
 
-const mapDispatchToProps = (dispatch) => (
+const mapDispatchToProps = dispatch => (
   {
     abilityChange: (ability, value) => {
-      dispatch({ type: 'CHARACTER_ABILITY_CHANGE', ability, value });
-    }
+      const score = Number.isInteger(parseInt(value, 10)) ? parseInt(value, 10) : 0;
+      dispatch(setProperty(ability, score));
+    },
   }
 );
 

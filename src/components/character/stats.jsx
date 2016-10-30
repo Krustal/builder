@@ -7,9 +7,9 @@ import CombatStats from './combat_stats.jsx';
 // styles
 import StatsStyles from '../../styles/components/stats.css';
 
-const Stats = ({ store }) => (
+const Stats = () => (
   <div className={StatsStyles.stats}>
-    <CharacterAbilities store={store} />
+    <CharacterAbilities />
     <CombatStats />
   </div>
 );

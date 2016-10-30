@@ -15,7 +15,7 @@ class CharacterSheet extends React.Component {
   }
 
   render() {
-    let { isDead } = this.props;
+    const { isDead } = this.props;
     let overlayStatus = '';
     if(isDead) {
       overlayStatus = (<DeadStatus />);
@@ -26,7 +26,7 @@ class CharacterSheet extends React.Component {
       <form className={characterSheetStyles.default}>
         <div className="logo" />
         <CharacterOverview />
-        {/*<Stats />*/}
+        <Stats />
         {overlayStatus}
       </form>
     );
