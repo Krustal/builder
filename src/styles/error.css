@@ -1,0 +1,17 @@
+.base {
+  background: #b64003;
+  border: solid #600804 1px;
+  color: white;
+  text-align: center;
+  padding: 5px 15px;
+  min-width: 400px;
+}
+
+.topBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}

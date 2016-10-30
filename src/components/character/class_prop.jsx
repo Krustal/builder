@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SelectInput from '../form/select_input.jsx';
 import InlineRadioBoxes from '../form/inline_radio_boxes.jsx';
-import { changeGameClass } from '../../actions';
+import { changeGameClass, makeChoice } from '../../actions';
 
 const abilityOptionsMap = {
   Strength: 'str',
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
   ));
 
   const bonusOptions = state.character
-    .gameClassAbilityBonusOptions.map((option) => (
+    .gameClassAbilityBonusOptions.map(option => (
       { label: abilityOptionsMap[option], value: option }
     ));
 
@@ -28,13 +28,16 @@ const mapStateToProps = (state) => {
     value: state.character.gameClass,
     options: classOptions || [],
     bonusOptions,
+    bonusChoice: state.character.gameClassAbilityBonus,
   };
 };
 const mapDispatchToProps = dispatch => (
   {
     updateCB: value => dispatch(changeGameClass(value)),
     classAbilityBonusCB: (value) => {
-      dispatch({ type: 'CHARACTER_CLASS_ABILITY_BONUS_CHANGE', ability: value });
+      // TODO: find a way to decouple this choice name from the component, it
+      // requires the component to know the choice name.
+      dispatch(makeChoice('+2 class ability bonus', value));
     },
   }
 );
@@ -43,7 +46,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) =>
     children: (
       <InlineRadioBoxes
         selectionCB={dispatchProps.classAbilityBonusCB}
-        options={stateProps.bonusOptions} />
+        options={stateProps.bonusOptions}
+        selectedOption={stateProps.bonusChoice} />
     ),
   });
 

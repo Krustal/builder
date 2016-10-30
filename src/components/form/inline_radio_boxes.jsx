@@ -4,8 +4,8 @@ import RadioBoxStyles from '../../styles/radio_boxes.scss';
 class RadioBox extends React.Component {
   render() {
     const style = this.props.selected ? RadioBoxStyles.selected : RadioBoxStyles.unselected;
-    return(
-      <div className={style} onClick={(evt) => this.props.onClick(this.props.value)}>
+    return (
+      <div className={style} onClick={() => this.props.onClick(this.props.value)}>
         {this.props.label}
         <input
           name={this.props.field}
@@ -18,26 +18,20 @@ class RadioBox extends React.Component {
 }
 
 class InlineRadioBoxes extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedOption: props.initialSelectedOption
-    };
-  }
   render() {
     const { field, options } = this.props;
     return (
       <div className={RadioBoxStyles.container}>
-        {options.map((option) => (
+        {options.map(option => (
           <RadioBox
             field={field}
             label={option.label}
             value={option.value}
             onClick={(value) => {
               this.props.selectionCB(value);
-              this.setState({ selectedOption: value });
+              // this.setState({ selectedOption: value });
             }}
-            selected={option.value === this.state.selectedOption} />
+            selected={option.value === this.props.selectedOption} />
         ))}
       </div>
     );
@@ -45,7 +39,7 @@ class InlineRadioBoxes extends React.Component {
 }
 
 InlineRadioBoxes.defaultProps = {
-  options: []
+  options: [],
 };
 
 export default InlineRadioBoxes;

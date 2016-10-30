@@ -4,6 +4,8 @@ export const CHANGE_RACE = 'CHANGE_RACE';
 export const CHANGE_GAME_CLASS = 'CHANGE_GAME_CLASS';
 export const CHANGE_LEVEL = 'CHANGE_LEVEL';
 export const SET_PROPERTY = 'SET_PROPERTY';
+export const MAKE_CHOICE = 'MAKE_CHOICE';
+export const INVALID_CHOICE = 'INVALID_CHOICE';
 
 export const loadCharacter = () => (dispatch, getState, { characterInterface }) =>
     dispatch({
@@ -48,3 +50,21 @@ export const setProperty = (property, value) => (dispatch, _s, { characterInterf
     value,
     character: characterInterface.set(property, value).character,
   });
+
+export const makeChoice = (choiceName, option) => (dispatch, _s, { characterInterface }) => {
+  try {
+    return dispatch({
+      type: MAKE_CHOICE,
+      choiceName,
+      option,
+      character: characterInterface.choose(choiceName, option).character,
+    });
+  } catch (err) {
+    return dispatch({
+      type: INVALID_CHOICE,
+      choiceName,
+      option,
+      message: err.message,
+    });
+  }
+};

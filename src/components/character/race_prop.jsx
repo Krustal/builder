@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SelectInput from '../form/select_input.jsx';
 import InlineRadioBoxes from '../form/inline_radio_boxes.jsx';
-import { changeRace } from '../../actions';
+import { changeRace, makeChoice } from '../../actions';
 
 const raceOptionsMap = {
   HighElf: 'High Elf',
@@ -31,29 +31,33 @@ const mapStateToProps = (state) => {
   return {
     label: 'Race',
     bonusOptions,
+    bonusChoice: state.character.racialAbilityBonus,
     value: state.character.race,
     options: raceOptions || [],
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
+const mapDispatchToProps = (dispatch, _ownProps) => (
+  {
     updateCB: (value) => {
       dispatch(changeRace(value));
     },
     racialAbilityBonusCB: (value) => {
-      dispatch({ type: "CHARACTER_RACIAL_ABILITY_BONUS_CHANGE", ability: value });
-    }
-  };
-};
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return Object.assign({}, ownProps, stateProps, dispatchProps, {
+      // TODO: find a way to decouple this choice name from the component, it
+      // requires the component to know the choice name.
+      dispatch(makeChoice('+2 racial ability bonus', value));
+    },
+  }
+);
+const mergeProps = (stateProps, dispatchProps, ownProps) =>
+  Object.assign({}, ownProps, stateProps, dispatchProps, {
     children: (
       <InlineRadioBoxes
         selectionCB={dispatchProps.racialAbilityBonusCB}
+        selectedOption={stateProps.bonusChoice}
         options={stateProps.bonusOptions} />
-    )
+    ),
   });
-};
+
 const RaceProp = connect(mapStateToProps, mapDispatchToProps, mergeProps)(SelectInput);
 export default RaceProp;
