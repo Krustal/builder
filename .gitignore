@@ -4,3 +4,4 @@ public/index.html
 public/main.bundle.js
 npm-debug.log
 .DS_STORE
+coverage/

@@ -1,7 +1,8 @@
-import TextInput from '../../../src/components/form/text_input.jsx';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
+import sinon from 'sinon';
+
+import TextInput from '../../../src/components/form/text_input.jsx';
 
 const inputElement = (element) => {
   return element && element.type === 'input';
@@ -10,14 +11,14 @@ const inputElement = (element) => {
 describe('TextInput', () => {
 
   it('can run tests inside an es6 block', () => {
-    expect(true).to.be.true;
+    expect(true).toBe(true);
   });
 
   it('be a label', () => {
     const renderer = TestUtils.createRenderer();
     renderer.render(<TextInput />);
     const output = renderer.getRenderOutput();
-    expect(output.type).to.eq('label');
+    expect(output.type).toBe('label');
   });
 
   it('contains a text input element', () => {
@@ -25,7 +26,7 @@ describe('TextInput', () => {
     renderer.render(<TextInput />);
     const output = renderer.getRenderOutput();
     const input = output.props.children.find(inputElement);
-    expect(input).to.exist;
+    expect(input).toBeTruthy();
   });
 
   it('onChange triggers', function() {
@@ -34,6 +35,6 @@ describe('TextInput', () => {
     const input = element.refs.input;
     input.value = 'giraffe';
     TestUtils.Simulate.change(input, { target: { value: 'giraffe' } });
-    expect(onChangeCB).to.have.been.called;
+    expect(onChangeCB.called).toBeTruthy();
   });
 });

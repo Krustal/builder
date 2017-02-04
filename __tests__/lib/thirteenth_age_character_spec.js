@@ -48,7 +48,7 @@ describe('Character', () => {
       expect(Character.create().choices.length).to.not.eq(0);
     });
 
-    context('when passing another character and diff properties', () => {
+    describe('when passing another character and diff properties', () => {
       it('returns a new character with updated properties', () => {
         const initialCharacter = Character.create();
         const otherCharacter = new Character(initialCharacter, { name: 'Byron' });
@@ -138,11 +138,14 @@ describe('Character', () => {
       expect(character.ac).to.eq(15);
     });
 
-    context('when the consequence of a choice is to set the value of a property', () => {
-      it('sets the value', () => {
-        expect(Character.create().choose('race', 'Human').race).to.eq('Human');
-      });
-    });
+    describe(
+      'when the consequence of a choice is to set the value of a property',
+      () => {
+        it('sets the value', () => {
+          expect(Character.create().choose('race', 'Human').race).to.eq('Human');
+        });
+      }
+    );
 
     it('throws an error if given an invalid choice name', () => {
       expect(() => {
@@ -150,7 +153,7 @@ describe('Character', () => {
       }).to.throw(Error);
     });
 
-    context('when the choice is based on a condition', () => {
+    describe('when the choice is based on a condition', () => {
       it('only the consequence that meets the condition is applied', () => {
         const character = Character.create().choose('gameClass', 'Barbarian');
         expect(character.hpLevelMod).to.eq(3);
@@ -163,7 +166,7 @@ describe('Character', () => {
       });
     });
 
-    context('when the consequence for a choice is additional choices', () => {
+    describe('when the consequence for a choice is additional choices', () => {
       it('adds that choice to the resulting character', () => {
         const character = Character.create().choose('race', 'Human');
         expect(character.choices.map(c => c.name)).to.include('+2 racial ability bonus');
@@ -176,7 +179,7 @@ describe('Character', () => {
       });
     });
 
-    context('when the choice has restrictions', () => {
+    describe('when the choice has restrictions', () => {
       const abilityChoiceOne = {
         name: 'ability choice one',
         options: {
@@ -256,7 +259,7 @@ describe('Character', () => {
         ).to.eq(null);
     });
 
-    context('when the choice had nested choices', () => {
+    describe('when the choice had nested choices', () => {
       it('the nested choices are reverted too', () => {
         const character = Character.create()
           .choose('race', 'Human')
@@ -288,7 +291,7 @@ describe('Character', () => {
       const character = Character.create();
       expect(character.optionsFor('race')).to.include('Human');
     });
-    context('the choice name is invalid', () => {
+    describe('the choice name is invalid', () => {
       it('returns an empty list', () => {
         const character = Character.create();
         expect(character.optionsFor('races')).to.deep.eq([]);
