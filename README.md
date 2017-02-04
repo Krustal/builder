@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Krustal/builder.png?label=ready&title=Ready)](https://waffle.io/Krustal/builder)
 # Character Builder
 
 Character builder
