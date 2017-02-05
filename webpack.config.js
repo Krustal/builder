@@ -1,22 +1,23 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const postCSSModValues = require('postcss-modules-values');
+const path = require('path');
 
 module.exports = {
   entry: {
     main: [
-      'webpack/hot/dev-server',
+      'react-hot-loader/patch',
+      // 'webpack/hot/dev-server',
       'webpack-hot-middleware/client',
       `${__dirname}/src/main.jsx`,
     ],
   },
-  devtool: '#eval-source-map',
+  devtool: 'eval-source-map',
   devServer: {
-    contentBase: './public',
+    contentBase: path.join(__dirname, 'public'),
   },
-  debug: true,
   output: {
-    path: `${__dirname}/public/`,
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].bundle.js',
     sourceMapFilename: 'debugging/[file].map',
     // TODO: I'd like to bring this back at some point to have better
@@ -25,35 +26,69 @@ module.exports = {
     pathinfo: true,
   },
   resolveLoader: {
-    moduleDirectories: ['node_modules'],
+    modules: ['node_modules'],
   },
   resolve: {
-    root: [`${__dirname}/src/`],
-    extensions: ['', '.js', '.coffee', '.jsx', '.css'],
+    modules: [
+      'node_modules',
+      path.resolve(__dirname, 'src'),
+    ],
+    extensions: ['.js', '.coffee', '.jsx', '.css'],
   },
   module: {
-    preloaders: [
-      { test: /\.js$/, loader: 'source-map' },
-    ],
-    loaders: [
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'source-map-loader',
+        enforce: 'pre',
+      },
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
-        loaders: ['react-hot', 'babel'],
+        exclude: [path.resolve(__dirname, 'node_modules')],
+        loader: 'babel-loader',
       },
       {
         test: /\.css$/,
-        loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss',
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [postCSSModValues],
+            },
+          },
+        ],
       },
       {
         test: /\.scss$/,
-        loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass-loader',
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]___[hash:base64:5]',
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [postCSSModValues],
+            },
+          },
+          'sass-loader',
+        ],
       },
     ],
-  },
-  postcss() {
-    // eslint-disable-next-line global-require
-    return [postCSSModValues];
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

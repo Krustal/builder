@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     ));
 
   return {
-    label: 'Class',
+    label: 'Klass',
     value: state.character.gameClass,
     options: classOptions || [],
     bonusOptions,
