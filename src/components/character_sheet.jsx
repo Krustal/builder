@@ -32,12 +32,13 @@ class CharacterSheet extends React.Component {
 
 CharacterSheet.propTypes = {
   createCharacter: PropTypes.func,
-  isDead: PropTypes.bool.isRequired,
+  isDead: PropTypes.bool,
   invalidMessage: PropTypes.string,
 };
 
 CharacterSheet.defaultProps = {
   createCharacter: () => {},
+  isDead: false,
   invalidMessage: null,
 };
 
