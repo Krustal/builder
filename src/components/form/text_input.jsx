@@ -41,7 +41,7 @@ TextInput.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   length: PropTypes.number,
   className: PropTypes.string,
-  updateCB: PropTypes.func.isRequired,
+  updateCB: PropTypes.func,
   variant: PropTypes.oneOf(['', 'major']),
   children: PropTypes.node,
 };
@@ -49,6 +49,7 @@ TextInput.defaultProps = {
   value: '',
   length: 20,
   className: '',
+  updateCB: () => {},
   variant: '',
   children: null,
 };

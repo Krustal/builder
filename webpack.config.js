@@ -7,7 +7,7 @@ module.exports = {
     main: [
       'webpack/hot/dev-server',
       'webpack-hot-middleware/client',
-      `${__dirname}/src/main.js`,
+      `${__dirname}/src/main.jsx`,
     ],
   },
   devtool: '#eval-source-map',

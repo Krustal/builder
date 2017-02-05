@@ -96,12 +96,12 @@ const CharacterAbilities = ({ character, abilityChange }) => {
 };
 
 CharacterAbilities.propTypes = {
-  character: PropTypes.string,
+  character: PropTypes.instanceOf(Object),
   abilityChange: PropTypes.func,
 };
 
 CharacterAbilities.defaultProps = {
-  character: '',
+  character: {},
   abilityChange: () => {},
 };
 
