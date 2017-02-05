@@ -2,6 +2,9 @@ node_modules/
 public/assets/
 public/index.html
 public/main.bundle.js
+public/main.*.bundle.js
+public/main.*.css
+public/debugging
 npm-debug.log
 .DS_STORE
 coverage/
