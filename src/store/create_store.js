@@ -13,17 +13,19 @@ const middlewares = [
   thunk.withExtraArgument({ characterInterface: initialCharacter }),
 ];
 
-export default (initialState = {}) => createStore(
-  reducer,
-  initialState,
-  composeEnhancers(applyMiddleware(...middlewares))
-);
+export default function configureStore(initialState = {}) {
+  const store = createStore(
+    reducer,
+    initialState,
+    composeEnhancers(applyMiddleware(...middlewares))
+  );
 
-// if (module.hot) {
-//   module.hot.accept('../reducers/character.js', () =>
-//     store.replaceReducer(
-//       // eslint-disable-next-line global-require
-//       require('../reducers/character.js') /* default if you use Babel 6+ */
-//     )
-//   );
-// }
+  if (module.hot) {
+    module.hot.accept('../reducers/character', () => {
+      const nextRootReducer = require('../reducers/character');
+      store.replaceReducer(nextRootReducer);
+    });
+  }
+
+  return store;
+}
