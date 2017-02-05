@@ -1,6 +1,24 @@
-import { CHANGE_NAME, LOAD_CHARACTER, CHANGE_RACE, CHANGE_GAME_CLASS, CHANGE_LEVEL, SET_PROPERTY, MAKE_CHOICE, INVALID_CHOICE } from '../actions';
+import
+{
+  CHANGE_NAME,
+  LOAD_CHARACTER,
+  CHANGE_RACE,
+  CHANGE_GAME_CLASS,
+  CHANGE_LEVEL,
+  SET_PROPERTY,
+  MAKE_CHOICE,
+  INVALID_CHOICE
+}
+from '../actions';
 
-const abilities = ['strength', 'constitution', 'dexterity', 'intelligence', 'wisdom', 'charisma'];
+const abilities = [
+  'strength',
+  'constitution',
+  'dexterity',
+  'intelligence',
+  'wisdom',
+  'charisma',
+];
 
 const storeFromCharacter = character => (
   {
@@ -12,7 +30,9 @@ const storeFromCharacter = character => (
     racialAbilityBonus: character.chosenChoices['+2 racial ability bonus'],
     gameClass: character.gameClass,
     gameClassOptions: character.optionsFor('gameClass'),
-    gameClassAbilityBonusOptions: character.optionsFor('+2 class ability bonus'),
+    gameClassAbilityBonusOptions: character.optionsFor(
+      '+2 class ability bonus'
+    ),
     gameClassAbilityBonus: character.chosenChoices['+2 class ability bonus'],
     level: character.level,
     ...abilities.reduce((abils, ability) => (
@@ -32,20 +52,20 @@ const storeFromCharacter = character => (
 
 export default (state = {}, action = {}) => {
   switch (action.type) {
-  case CHANGE_NAME:
-  case CHANGE_RACE:
-  case CHANGE_GAME_CLASS:
-  case CHANGE_LEVEL:
-  case LOAD_CHARACTER:
-  case SET_PROPERTY:
-  case MAKE_CHOICE:
-    return storeFromCharacter(action.character);
-  case INVALID_CHOICE:
-    return {
-      ...state,
-      invalidMessage: action.message,
-    };
-  default:
-    return state;
+    case CHANGE_NAME:
+    case CHANGE_RACE:
+    case CHANGE_GAME_CLASS:
+    case CHANGE_LEVEL:
+    case LOAD_CHARACTER:
+    case SET_PROPERTY:
+    case MAKE_CHOICE:
+      return storeFromCharacter(action.character);
+    case INVALID_CHOICE:
+      return {
+        ...state,
+        invalidMessage: action.message,
+      };
+    default:
+      return state;
   }
 };

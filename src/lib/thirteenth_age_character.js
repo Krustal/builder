@@ -1,6 +1,6 @@
 // Configures a character builder for 13th Age compatible characters
-import RaceChoice from './races.js';
-import ClassChoice from './classes.js';
+import RaceChoice from './races';
+import ClassChoice from './classes';
 import { createCharacterBuilder } from './character';
 
 const properties = {
@@ -28,13 +28,16 @@ export const defenseToMods = {
   PD: ['strength', 'constitution', 'dexterity'],
   MD: ['intelligence', 'wisdom', 'charisma'],
 };
-export const middleMod = (abil1, abil2, abil3) => [abil1, abil2, abil3].sort()[1];
+export const middleMod = (abil1, abil2, abil3) => (
+  [abil1, abil2, abil3].sort()[1]
+);
 export const defense = (character, defenseType) => {
   const base = character[`base${defenseType}`];
   if (base) {
-    return base +
-    middleMod.apply(null, defenseToMods[defenseType].map((abil) => character[`${abil}Mod`])) +
-    character.level;
+    const middleModValue = middleMod(
+      ...defenseToMods[defenseType].map((abil) => character[`${abil}Mod`])
+    );
+    return base + middleModValue + character.level;
   }
   return null;
 };

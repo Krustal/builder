@@ -1,4 +1,4 @@
-import { fallbacks } from './utils.js';
+import { fallbacks } from './utils';
 
 export function combineModifiers(currentModifiers, newModifiers) {
   const combinedModifiers = newModifiers.reduce((modifiers, consequence) => (
@@ -6,7 +6,10 @@ export function combineModifiers(currentModifiers, newModifiers) {
       {},
       modifiers,
       {
-        [consequence.field]: [consequence.modifier, ...modifiers[consequence.field]],
+        [consequence.field]: [
+          consequence.modifier,
+          ...modifiers[consequence.field],
+        ],
       }
     )
   ), Object.assign({}, currentModifiers));
@@ -15,19 +18,20 @@ export function combineModifiers(currentModifiers, newModifiers) {
 }
 
 export function removeModifiers(currentModifiers, modifiersToRemove) {
-  const remainingModifiers = modifiersToRemove.reduce((modifiers, consequence) => {
-    const propMods = modifiers[consequence.field];
-    const consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
-    return Object.assign(
-      {},
-      modifiers,
-      {
-        [consequence.field]: propMods
-          .slice(0, consequenceToRemoveIndex)
-          .concat(propMods.slice(consequenceToRemoveIndex + 1)),
-      }
-    );
-  }, Object.assign({}, currentModifiers));
+  const remainingModifiers = modifiersToRemove
+    .reduce((modifiers, consequence) => {
+      const propMods = modifiers[consequence.field];
+      const consequenceToRemoveIndex = propMods.indexOf(consequence.modifier);
+      return Object.assign(
+        {},
+        modifiers,
+        {
+          [consequence.field]: propMods
+            .slice(0, consequenceToRemoveIndex)
+            .concat(propMods.slice(consequenceToRemoveIndex + 1)),
+        }
+      );
+    }, Object.assign({}, currentModifiers));
   return remainingModifiers;
 }
 
@@ -59,7 +63,10 @@ function Character(base = {}, diff = {}, properties = {}) {
     const defaultValue = evalOrValueOf(this, properties[prop]);
 
     // The diff is either a setter (computed at evaluation time) or a static
-    const diffFrom = fallbacks(diff[prop], (base.setterModifiers && base.setterModifiers[prop]));
+    const diffFrom = fallbacks(
+      diff[prop],
+      (base.setterModifiers && base.setterModifiers[prop])
+    );
     if (typeof diffFrom === 'function') {
       this.setterModifiers[prop] = diffFrom;
     }
@@ -74,12 +81,17 @@ function Character(base = {}, diff = {}, properties = {}) {
     {}, diff.setterModifiers, base.setterModifiers, this.setterModifiers
   );
   this.modifiers = fallbacks(diff.modifiers, base.modifiers, this.modifiers);
-  this.chosenChoices = Object.assign({}, base.chosenChoices, diff.chosenChoices);
+  this.chosenChoices = Object.assign(
+    {},
+    base.chosenChoices,
+    diff.chosenChoices
+  );
 }
 
 Character.prototype = {
   _getModifiedProperty(name) {
-    return this.modifiers[name].reduce((property, mod) => mod(property), this[`_${name}`]);
+    return this.modifiers[name]
+      .reduce((property, mod) => mod(property), this[`_${name}`]);
   },
   getChoice(name) {
     const choice = this.choices.find((c) => (c.name === name));

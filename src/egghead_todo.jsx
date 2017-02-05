@@ -1,11 +1,17 @@
+import { combineReducers, createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
+import React from 'react';
+import ReactDom from 'react-dom';
+
 // Toy App Stuff
-const todo = (state, action) => {
+/* eslint-disable react/prop-types */
+const todoReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return {
         id: action.id,
         text: action.text,
-        completed: false
+        completed: false,
       };
     case 'TOGGLE_TODO':
       if (state.id !== action.id) {
@@ -14,23 +20,23 @@ const todo = (state, action) => {
 
       return {
         ...state,
-        completed: !state.completed
+        completed: !state.completed,
       };
     default:
       return state;
   }
 };
 
-const todos = (state = [], action) => {
+const todosReducer = (state = [], action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [
         ...state,
-        todo(undefined, action)
+        todoReducer(undefined, action),
       ];
     case 'TOGGLE_TODO':
       return state.map(t =>
-        todo(t, action)
+        todoReducer(t, action)
       );
     default:
       return state;
@@ -46,91 +52,97 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
   }
 };
 
-import { combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import { connect } from 'react-redux';
+
 const todoApp = combineReducers({
-  todos,
-  visibilityFilter
+  todosReducer,
+  visibilityFilter,
 });
 
-import { Component } from 'react';
-
-const Link = ({active, onClick, children}) => {
+const Link = ({ active, onClick, children }) => {
   if (active) {
-    return <span>{children}</span>
+    return <span>{children}</span>;
   }
   return (
-    <a href='#'
-       onClick={e => {
-         e.preventDefault();
-         onClick();
-       }}
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <a
+      onClick={e => {
+        e.preventDefault();
+        onClick();
+      }}
     >
       {children}
     </a>
-  )
-}
+  );
+};
 
-const mapStateToLinkProps = (state, ownProps) => {
-  return {
-    active: ownProps.filter === state.visibilityFilter
-  };
-}
-const mapDispatchToLinkProps = (dispatch, ownProps) => {
-  return {
-    onClick: () => {
-      dispatch({
-        type: 'SET_VISIBILITY_FILTER',
-        filter: ownProps.filter })
-    }
-  }
-}
+const mapStateToLinkProps = (state, ownProps) => ({
+  active: ownProps.filter === state.visibilityFilter,
+});
+const mapDispatchToLinkProps = (dispatch, ownProps) => ({
+  onClick: () => {
+    dispatch({
+      type: 'SET_VISIBILITY_FILTER',
+      filter: ownProps.filter });
+  },
+});
 const FilterLink = connect(
   mapStateToLinkProps,
   mapDispatchToLinkProps
 )(Link);
 
 // Presentational component
-const Todo = ({onClick, completed, text}) => (
-  <li onClick={onClick}
+const Todo = ({ onClick, completed, text }) => (
+  // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+  <li
+    onClick={onClick}
     style={{
       textDecoration:
-        completed ? 'line-through' : 'none'
-    }}>
+        completed ? 'line-through' : 'none',
+    }}
+  >
     {text}
   </li>
 );
 
-const TodoList = ({todos, onTodoClick}) => (
+const TodoList = ({ todos, onTodoClick }) => (
   <ul>
     {todos.map(todo =>
       <Todo
         key={todo.id}
         {...todo}
-        onClick={() => onTodoClick(todo.id)} />
+        onClick={() => onTodoClick(todo.id)}
+      />
     )}
   </ul>
 );
 
-const mapStateToTodoListProps = (state) => {
-  return {
-    todos: getVisibleTodos(
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed);
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => !t.completed);
+    default:
+      return todos;
+  }
+};
+
+const mapStateToTodoListProps = (state) => ({
+  todos: getVisibleTodos(
       state.todos,
       state.visibilityFilter
-    )
-  };
-};
-const mapDispatchToTodoListProps = (dispatch) => {
-  return {
-    onTodoClick: (id) => {
-      dispatch({
-        type: 'TOGGLE_TODO',
-        id
-      });
-    }
-  }
-}
+    ),
+});
+const mapDispatchToTodoListProps = (dispatch) => ({
+  onTodoClick: (id) => {
+    dispatch({
+      type: 'TOGGLE_TODO',
+      id,
+    });
+  },
+});
 const VisibleTodoList = connect(
   mapStateToTodoListProps,
   mapDispatchToTodoListProps
@@ -162,53 +174,44 @@ const VisibleTodoList = connect(
 // VisibleTodoList.contextTypes = {
 //   store: React.PropTypes.object
 // };
-
+let nextTodoId = 0;
 let AddTodo = ({ dispatch }) => {
   let input;
-
+  nextTodoId += 1;
   return (
     <div>
       <input ref={node => { input = node; }} />
-      <button onClick={() => {
-        dispatch({
-          type: 'ADD_TODO',
-          id: nextTodoId++,
-          text: input.value
-        })
-        input.value = '';
-      }}>
+      <button
+        onClick={() => {
+          dispatch({
+            type: 'ADD_TODO',
+            id: nextTodoId,
+            text: input.value,
+          });
+          input.value = '';
+        }}
+      >
         Add Todo
       </button>
     </div>
-  )
-}
+  );
+};
 AddTodo = connect()(AddTodo);
-
-const getVisibleTodos = (todos, filter) => {
-  switch (filter) {
-    case 'SHOW_ALL':
-      return todos;
-    case 'SHOW_COMPLETED':
-      return todos.filter(t => t.completed)
-    case 'SHOW_ACTIVE':
-      return todos.filter(t => !t.completed)
-  }
-}
 
 const Footer = () => (
   <p>
     Show:
     {' '}
-    <FilterLink filter='SHOW_ALL'>All</FilterLink>
+    <FilterLink filter="SHOW_ALL">All</FilterLink>
     {' '}
-    <FilterLink filter='SHOW_ACTIVE'>Active</FilterLink>
+    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>
     {' '}
-    <FilterLink filter='SHOW_COMPLETED'>Completed</FilterLink>
+    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
     {' '}
   </p>
-)
+);
 
-let nextTodoId = 0;
+
 const TodoApp = () => (
   <div>
     <AddTodo />
@@ -216,8 +219,6 @@ const TodoApp = () => (
     <Footer />
   </div>
 );
-
-import { createStore } from 'redux';
 
 ReactDom.render(
   <Provider store={createStore(todoApp)}>

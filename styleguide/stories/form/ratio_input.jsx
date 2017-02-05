@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import RatioInput from '../../../src/components/form/ratio_input.jsx';
+import RatioInput from '../../../src/components/form/ratio_input';
 
 storiesOf('Ratio Input', module)
   .add('default', () => (

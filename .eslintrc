@@ -1,40 +1,74 @@
 {
-    "extends": "airbnb-base",
-    "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "quotes": [
-            2,
-            "single"
-        ],
-        "linebreak-style": [
-            2,
-            "unix"
-        ],
-        "semi": [
-            2,
-            "always"
-        ],
-        "no-underscore-dangle": 0,
-        "no-unused-vars": [
-          "error",
-          { "argsIgnorePattern": "^_" }
-        ]
-    },
-    "env": {
-        "es6": true,
-        "browser": true,
-        "mocha": true,
-    },
-    "parserOptions": {
-      "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
+  "extends": "airbnb",
+  "plugins": [],
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true,
+    "es6": true,
+  },
+  "globals": {
+    "expect": false,
+    "beforeAll": false,
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true,
+    }
+  },
+  # Custom Disabled Rules
+  rules: {
+    # TODO: PR for the rule to disable parens for short expression functions,
+    # but require for higher order curried functions that return another
+    # functions expression. See [eslint/eslint#7322](https://github.com/eslint/eslint/issues/7322)
+    arrow-parens: 0,
+    arrow-body-style: ["error", "as-needed"],
+    camelcase: 0,
+    max-len: ['warn', 80],
+    no-console: ["error", { allow: ["info", "warn", "error"] }],
+    no-param-reassign: 0,
+    no-unused-expressions: 0, # Issues with expect
+    no-unused-vars: ["error", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_", "caughtErrors": "none" }],
+    comma-dangle: ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "ignore",
+      "exports": "ignore",
+      "functions": "ignore",
+    }],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allowAfterThis": true,
       }
-    },
-    "plugins": [
-        "react"
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "server.config.js",
+          "webpack.*",
+          "**/styleguide/**",
+          "**/*_test.js",
+          "**/*_spec.js",
+          "**/*_spec.jsx",
+          "**/test/**",
+          "**/*_story.js",
+          "**/*_story.jsx",
+          "**/server.js",
+          "**/prod_server.js",
+          "**/components/development/*.jsx"
+        ]
+      }
     ]
+    # Rules up for debate:
+    # func-names: 0,
+    # global-require: 0,
+    # no-else-return: 0,
+    # no-undef: 0,
+    # quotes: 0,
+  }
 }
