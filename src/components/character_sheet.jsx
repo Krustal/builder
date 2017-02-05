@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { loadCharacter } from '../actions';
-import Barbarian from '../constants/classes/barbarian.js';
-import logoStyles from '../styles/logo.css';
 import characterSheetStyles from '../styles/components/character_sheet.scss';
 
-import CharacterOverview from './character/overview.jsx';
-import Stats from './character/stats.jsx';
-import DeadStatus from './character/dead_status.jsx';
-import InvalidChoice from './character/invalid_choice.jsx';
+import CharacterOverview from './character/overview';
+import Stats from './character/stats';
+import DeadStatus from './character/dead_status';
+import InvalidChoice from './character/invalid_choice';
 
 class CharacterSheet extends React.Component {
   componentWillMount() {
@@ -18,7 +16,10 @@ class CharacterSheet extends React.Component {
   render() {
     const { isDead, invalidMessage } = this.props;
     return (
-      <form className={characterSheetStyles.default}>
+      <form
+        onSubmit={(ev) => ev.preventDefault()}
+        className={characterSheetStyles.default}
+      >
         <div className="logo" />
         <CharacterOverview />
         <Stats />
@@ -28,6 +29,17 @@ class CharacterSheet extends React.Component {
     );
   }
 }
+
+CharacterSheet.propTypes = {
+  createCharacter: PropTypes.func,
+  isDead: PropTypes.bool.isRequired,
+  invalidMessage: PropTypes.string,
+};
+
+CharacterSheet.defaultProps = {
+  createCharacter: () => {},
+  invalidMessage: null,
+};
 
 const mapStateToProps = state => (
   {

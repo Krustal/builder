@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import SelectInput from '../form/select_input.jsx';
-import InlineRadioBoxes from '../form/inline_radio_boxes.jsx';
+import SelectInput from '../form/select_input';
+import InlineRadioBoxes from '../form/inline_radio_boxes';
 import { changeRace, makeChoice } from '../../actions';
 
 const raceOptionsMap = {
@@ -62,9 +62,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) =>
       <InlineRadioBoxes
         selectionCB={dispatchProps.racialAbilityBonusCB}
         selectedOption={stateProps.bonusChoice}
-        options={stateProps.bonusOptions} />
+        options={stateProps.bonusOptions}
+      />
     ),
   });
 
-const RaceProp = connect(mapStateToProps, mapDispatchToProps, mergeProps)(SelectInput);
+const RaceProp = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(SelectInput);
 export default RaceProp;

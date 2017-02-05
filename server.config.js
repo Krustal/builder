@@ -1,20 +1,12 @@
-var webpack,
-    webpackDevMiddleware,
-    webpackHotMiddleware,
-    webpackConfig,
-    bundler,
-    historyApiFallback,
-    browserSync;
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+const historyApiFallback = require('connect-history-api-fallback');
+const browserSync = require('browser-sync');
+const webpackConfig = require('./webpack.config');
 
-webpack = require('webpack');
-webpackDevMiddleware = require('webpack-dev-middleware');
-webpackHotMiddleware = require('webpack-hot-middleware');
-webpackConfig = require('./webpack.config');
-bundler = webpack(webpackConfig);
-historyApiFallback = require('connect-history-api-fallback');
-browserSync = require('browser-sync');
-
-var server = browserSync.create();
+const bundler = webpack(webpackConfig);
+const server = browserSync.create();
 
 server.init({
   server: {
@@ -25,11 +17,11 @@ server.init({
         noInfo: false,
         quiet: false,
         stats: {
-          colors: true
-        }
+          colors: true,
+        },
       }),
       webpackHotMiddleware(bundler),
-      historyApiFallback()
-    ]
-  }
+      historyApiFallback(),
+    ],
+  },
 });

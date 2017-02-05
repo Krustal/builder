@@ -1,23 +1,50 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import uuid from 'uuid/v4';
 import InputStyle from '../../styles/input.css';
 import CombatStatStyle from '../../styles/components/combat_stat.css';
 import HeaderStyle from '../../styles/headers.scss';
 
 export default class DefenseStat extends React.Component {
   render() {
-    var label = this.props.label.split('').reduce((memo, char) => {
+    const label = this.props.label.split('').reduce((memo, char) => {
       memo.push(char);
       memo.push(<br />);
       return memo;
     }, []).slice(0, -1);
+    const inputId = `defense-stat-${uuid()}`;
     return (
       <div className={CombatStatStyle.basic}>
         <h3 className={HeaderStyle.h3}>{this.props.children}</h3>
         <div className={InputStyle.defenseStat}>
-          <label className={InputStyle.defenseStatLabel}>{label}</label>
-          <input value={this.props.value} disabled={true} className={InputStyle.defenseStatInput} type="text" maxLength={2} size={10} />
+          <label
+            htmlFor={inputId}
+            className={InputStyle.defenseStatLabel}
+          >
+            {label}
+          </label>
+          <input
+            id={inputId}
+            value={this.props.value}
+            disabled
+            className={InputStyle.defenseStatInput}
+            type="text"
+            maxLength={2}
+            size={10}
+          />
         </div>
       </div>
     );
   }
 }
+
+DefenseStat.propTypes = {
+  label: PropTypes.string,
+  children: PropTypes.node,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+DefenseStat.defaultProps = {
+  label: '',
+  value: '',
+  children: null,
+};

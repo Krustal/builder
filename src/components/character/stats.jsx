@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Components
-import CharacterAbilities from './abilities.jsx';
-import CombatStats from './combat_stats.jsx';
+import CharacterAbilities from './abilities';
+import CombatStats from './combat_stats';
 
 // styles
 import StatsStyles from '../../styles/components/stats.css';

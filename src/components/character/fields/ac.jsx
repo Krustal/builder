@@ -1,16 +1,9 @@
 import { connect } from 'react-redux';
-import CombatStat from "../defense_stat.jsx";
+import CombatStat from '../defense_stat';
 
-const mapStateToProps = (state) => {
-  return {
-    label: "AC",
-    value: state.character.ac
-  };
-};
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    // props based on dispatcher
-  };
-};
-const ACField = connect(mapStateToProps, mapDispatchToProps)(CombatStat);
+const mapStateToProps = (state) => ({
+  label: 'AC',
+  value: state.character.ac,
+});
+const ACField = connect(mapStateToProps)(CombatStat);
 export default ACField;

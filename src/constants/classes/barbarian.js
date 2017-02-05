@@ -1,6 +1,6 @@
-import ClassBuilder from './base.js';
+import ClassBuilder from './base';
 
 const Barbarian = ClassBuilder({
-  baseAC: 12
+  baseAC: 12,
 });
 export default Barbarian;

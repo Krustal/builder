@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import TextInput from '../form/text_input.jsx';
+import TextInput from '../form/text_input';
 import { changeLevel } from '../../actions';
 
 const mapStateToProps = state => (
