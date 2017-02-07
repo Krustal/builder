@@ -6,7 +6,7 @@ const postCSSModValues = require('postcss-modules-values');
 module.exports = {
   entry: {
     main: [
-      `${__dirname}/src/main.js`,
+      `${__dirname}/src/main.jsx`,
     ],
   },
   devtool: 'cheap-module-source-map',
